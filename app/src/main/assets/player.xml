@@ -1,0 +1,8 @@
+<player>
+    <name>Oleksandr</name>
+    <level>1</level>
+    <health>50</health>
+    <damage>10</damage>
+    <speed>10</speed>
+    <shield>35</shield>
+</player>
