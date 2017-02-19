@@ -15,6 +15,7 @@ public class Client extends Thread {
     private Socket socket;
     private PrintWriter writer;
     private BufferedReader reader;
+    private ClientListener clientListener;
 
     public Client(String ip, int port) {
         try {
@@ -26,10 +27,17 @@ public class Client extends Thread {
         }
     }
 
+    public void setClientListener(ClientListener listener){
+        clientListener = listener;
+    }
+
     public void run(){
         while (true){
             try {
-                reader.readLine();
+                String message = reader.readLine();
+                if(clientListener != null){
+                    clientListener.onMessageReceived(message);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -37,7 +45,38 @@ public class Client extends Thread {
     }
 
     public void sendMessage(String message){
-        writer.println(message);
-        writer.flush();
+        System.out.println("Invio: " + message);
+        try {
+            writer.println(message);
+            writer.flush();
+            if(clientListener != null)
+                clientListener.onMessageSendSuccess();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void send(Command command){
+        sendMessage(Converter.toString(command));
+    }
+
+    public void send(Command command, String[] dati){
+        String message = Converter.toString(command);
+        for(int i = 0; i < dati.length; i++){
+            message += ":" + dati[i];
+        }
+        sendMessage(message);
+    }
+
+    public void send(Request request){
+        sendMessage(Converter.toString(request));
+    }
+
+    public void send(Request request, String[] dati){
+        String message = Converter.toString(request);
+        for(int i = 0; i < dati.length; i++){
+            message += ":" + dati[i];
+        }
+        sendMessage(message);
     }
 }

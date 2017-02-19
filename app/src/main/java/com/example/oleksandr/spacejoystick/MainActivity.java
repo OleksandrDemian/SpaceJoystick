@@ -1,8 +1,10 @@
 package com.example.oleksandr.spacejoystick;
 
 import android.Manifest;
+import android.content.Context;
 import android.os.Build;
 import android.os.PersistableBundle;
+import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,8 +18,8 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity implements ClientListener {
 
     private Client client;
-    private boolean engineEnabled = false;
     private PlayerData playerData;
+    private Vibrator vibrator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +28,8 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
 
         playerData = new PlayerData(getApplicationContext());
         playerData.loadPlayer();
+
+        vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
 
         requestPermission();
         startClient();
@@ -38,61 +42,51 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
         left.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                client.sendMessage("cl");
+                client.send(Command.TURNLEFT);
             }
         });
 
         right.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                client.sendMessage("cr");
+                client.send(Command.TURNRIGHT);
             }
         });
 
         shoot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                client.sendMessage("cs");
+                client.send(Command.FIRE);
             }
         });
 
         engine.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                engineEnabled = !engineEnabled;
-                client.sendMessage("ce" + (engineEnabled ? "1" : "0"));
+                client.send(Command.ENGINETRIGGER);
             }
         });
-
-        /*left.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                client.sendMessage("l");
-                return false;
-            }
-        });
-        right.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                client.sendMessage("r");
-                return false;
-            }
-        });*/
     }
 
     private void requestPermission(){
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1)
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET}, 1);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET, Manifest.permission.VIBRATE}, 1);
 
     }
 
     private void startClient(){
+        final ClientListener listener = this;
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 String ip = getIntent().getExtras().getString("ip", "null");
                 client = new Client(ip, 6546);
+                client.setClientListener(listener);
                 client.sendMessage("rn" + playerData.getName());
+
+                //Dati order: health, damage, shield, speed, shipSkin
+                String[] dati = { "50", "15", "3", "500", "2" };
+                client.send(Request.SHIPINFO, dati);
             }
         });
         thread.start();
@@ -106,5 +100,10 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
             }
         });
+    }
+
+    @Override
+    public void onMessageSendSuccess() {
+        vibrator.vibrate(50);
     }
 }

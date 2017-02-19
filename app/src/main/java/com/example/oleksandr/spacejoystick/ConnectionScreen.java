@@ -1,6 +1,8 @@
 package com.example.oleksandr.spacejoystick;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -33,15 +35,29 @@ public class ConnectionScreen extends Fragment {
         super.onStart();
 
         final EditText ipText = (EditText)view.findViewById(R.id.ip);
+        ipText.setText(getLastIP());
 
         Button connect = (Button)view.findViewById(R.id.btnConnect);
         connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String ip = ipText.getText().toString();
+                saveIP(ip);
                 Intent intent = new Intent(getActivity().getApplicationContext(), MainActivity.class);
-                intent.putExtra("ip", ipText.getText().toString());
+                intent.putExtra("ip", ip);
                 startActivity(intent);
             }
         });
+    }
+
+    private String getLastIP(){
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("player", Context.MODE_PRIVATE);
+        return sharedPreferences.getString("lastIP", "niente");
+    }
+
+    private void saveIP(String ip){
+        SharedPreferences.Editor spEditor = getContext().getSharedPreferences("player", Context.MODE_PRIVATE).edit();
+        spEditor.putString("lastIP", ip);
+        spEditor.commit();
     }
 }

@@ -2,7 +2,6 @@ package com.example.oleksandr.spacejoystick;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.AssetManager;
 
 /**
  * Created by Oleksandr on 15/02/2017.
