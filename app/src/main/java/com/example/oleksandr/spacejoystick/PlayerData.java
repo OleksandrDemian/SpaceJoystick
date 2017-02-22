@@ -13,6 +13,10 @@ public class PlayerData {
 
     private String name;
     private String health;
+    private int damage;
+    private int shield;
+    private int abilityCoolDown = 5;
+    private int fireCoolDown = 1;
 
     public PlayerData(Context context){
         this.context = context;
@@ -51,6 +55,14 @@ public class PlayerData {
     public String getName(){
         System.out.println(name);
         return name;
+    }
+
+    public int getAbilityCoolDown(){
+        return abilityCoolDown;
+    }
+
+    public int getFireCoolDown(){
+        return fireCoolDown;
     }
 
     public void setName(String name, boolean save){

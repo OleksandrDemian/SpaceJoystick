@@ -16,6 +16,8 @@ public class Converter {
                 return "cs";
             case ENGINETRIGGER:
                 return "ce";
+            case ABILITYTRIGGER:
+                return "ca";
         }
         return "unknown";
     }

@@ -8,5 +8,6 @@ public enum Command {
     TURNLEFT,
     TURNRIGHT,
     ENGINETRIGGER,
-    FIRE
+    FIRE,
+    ABILITYTRIGGER
 }

@@ -3,15 +3,11 @@ package com.example.oleksandr.spacejoystick;
 import android.Manifest;
 import android.content.Context;
 import android.os.Build;
-import android.os.PersistableBundle;
 import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -20,6 +16,8 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
     private Client client;
     private PlayerData playerData;
     private Vibrator vibrator;
+    private Timer abilityTimer;
+    private Timer fireTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +27,9 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
         playerData = new PlayerData(getApplicationContext());
         playerData.loadPlayer();
 
+        abilityTimer = new Timer(playerData.getAbilityCoolDown(), true);
+        fireTimer = new Timer(playerData.getFireCoolDown(), true);
+
         vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
 
         requestPermission();
@@ -37,6 +38,8 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
         ImageButton left = (ImageButton) findViewById(R.id.btnLeft);
         ImageButton right = (ImageButton) findViewById(R.id.btnRight);
         ImageButton shoot = (ImageButton) findViewById(R.id.btnShoot);
+        ImageButton ability = (ImageButton) findViewById(R.id.btnAbility);
+
         final ImageButton engine = (ImageButton) findViewById(R.id.btnEngine);
 
         left.setOnClickListener(new View.OnClickListener() {
@@ -53,17 +56,27 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
             }
         });
 
-        shoot.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                client.send(Command.FIRE);
-            }
-        });
-
         engine.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 client.send(Command.ENGINETRIGGER);
+            }
+        });
+
+        shoot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(fireTimer.passed())
+                    client.send(Command.FIRE);
+            }
+        });
+
+        ability.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("Delta: " + abilityTimer.deltaTime());
+                if(abilityTimer.passed())
+                    client.send(Command.ABILITYTRIGGER);
             }
         });
     }
@@ -85,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
                 client.sendMessage("rn" + playerData.getName());
 
                 //Dati order: health, damage, shield, speed, shipSkin
-                String[] dati = { "50", "15", "3", "500", "2" };
+                String[] dati = { "50", "15", "3", "500", "3" };
                 client.send(Request.SHIPINFO, dati);
             }
         });
@@ -104,6 +117,6 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
 
     @Override
     public void onMessageSendSuccess() {
-        vibrator.vibrate(50);
+        vibrator.vibrate(25);
     }
 }

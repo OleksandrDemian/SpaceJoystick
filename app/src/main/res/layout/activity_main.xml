@@ -24,30 +24,41 @@
     <ImageButton
         android:layout_width="90sp"
         android:layout_height="90sp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:id="@+id/btnShoot"
-        android:background="@drawable/flatdark48"
-        android:elevation="10dp" />
-
-    <ImageButton
-        android:layout_width="90sp"
-        android:layout_height="90sp"
-        android:id="@+id/btnEngine"
-        android:background="@drawable/flatdark49"
-        android:layout_marginBottom="27dp"
-        android:layout_above="@+id/btnShoot"
-        android:layout_alignParentEnd="true"
-        android:elevation="10dp" />
-
-    <ImageButton
-        android:layout_width="90sp"
-        android:layout_height="90sp"
         android:id="@+id/btnRight"
         android:background="@drawable/flatdark24"
         android:layout_marginStart="26dp"
         android:layout_alignParentBottom="true"
         android:layout_toEndOf="@+id/btnLeft"
         android:elevation="10dp" />
+
+    <ImageButton
+        android:layout_width="90sp"
+        android:layout_height="90sp"
+        android:id="@+id/btnShoot"
+        android:background="@drawable/flatdark48"
+        android:elevation="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
+
+    <ImageButton
+        android:layout_width="90sp"
+        android:layout_height="90sp"
+        android:id="@+id/btnEngine"
+        android:background="@drawable/flatdark49"
+        android:elevation="10dp"
+        android:layout_above="@+id/btnShoot"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="38dp" />
+
+    <ImageButton
+        android:layout_width="90sp"
+        android:layout_height="90sp"
+        android:id="@+id/btnAbility"
+        android:background="@drawable/flatdark35"
+        android:elevation="10dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginTop="53dp"
+        android:layout_alignTop="@+id/btnEngine"
+        android:layout_toStartOf="@+id/btnShoot" />
 
 </RelativeLayout>
