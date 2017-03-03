@@ -52,7 +52,7 @@ public class ConnectionScreen extends Fragment {
 
     private String getLastIP(){
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("player", Context.MODE_PRIVATE);
-        return sharedPreferences.getString("lastIP", "niente");
+        return sharedPreferences.getString("lastIP", "");
     }
 
     private void saveIP(String ip){

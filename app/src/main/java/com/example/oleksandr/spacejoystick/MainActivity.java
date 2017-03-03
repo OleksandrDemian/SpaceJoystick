@@ -97,9 +97,9 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
                 client.setClientListener(listener);
                 client.sendMessage("rn" + playerData.getName());
 
-                //Dati order: health, damage, shield, speed, shipSkin
-                String[] dati = { "50", "15", "3", "500", "3" };
-                client.send(Request.SHIPINFO, dati);
+                //Dati order: health, damage, shield, speed, shipSkin, abilityType, abilityLevel
+                //String[] dati = { "50", "15", "3", "500", "1", "3", "2" };
+                client.send(Request.SHIPINFO, playerData.getShipInfoArray());
             }
         });
         thread.start();

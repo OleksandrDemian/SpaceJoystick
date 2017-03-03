@@ -15,6 +15,7 @@ public class Timer {
         this.chekingTime = chekingTime;
         this.autoTick = autoTick;
         lastCheck = System.nanoTime();
+        startTime = lastCheck;
     }
 
     public void tick(){
@@ -22,6 +23,7 @@ public class Timer {
     }
 
     public boolean passed(){
+        System.out.println(deltaTime() + ": " + chekingTime);
         if(deltaTime() > chekingTime){
             if(autoTick)
                 tick();
@@ -30,8 +32,16 @@ public class Timer {
         return false;
     }
 
+    public double passedSinceStart(){
+        return calculateTime(startTime, System.nanoTime());
+    }
+
     public double deltaTime(){
-        long nanoDelta = System.nanoTime() - lastCheck;
+        return calculateTime(lastCheck, System.nanoTime());
+    }
+
+    private double calculateTime(long from, long to){
+        long nanoDelta = to - from;
         double seconds = (nanoDelta / 1000000000.0);
         System.out.println("Delta: " + seconds);
         return seconds;
