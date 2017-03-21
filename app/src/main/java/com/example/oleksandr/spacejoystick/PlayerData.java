@@ -101,6 +101,10 @@ public class PlayerData {
         return null;
     }
 
+    public int getAttributesCount(){
+        return attributes.size();
+    }
+
     public void decresePoints(){
         points --;
     }

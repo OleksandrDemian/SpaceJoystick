@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:padding="10sp"
+        android:layout_height="65sp">
+
+        <TextView
+            android:text="Name:"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtAttrName"
+            android:textSize="20sp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@+id/txtAttrVal"
+            android:layout_width="100sp"
+            android:textColor="@color/colorAccent" />
+
+        <TextView
+            android:text="10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtAttrVal"
+            android:textSize="20sp"
+            android:layout_alignBaseline="@+id/txtAttrName"
+            android:layout_alignBottom="@+id/txtAttrName"
+            android:layout_toStartOf="@+id/btnAttrUp"
+            android:paddingRight="20sp"
+            android:textColor="@color/colorAccent" />
+
+        <Button
+            android:text="UP"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnAttrUp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:background="@color/internalElements"
+            android:textColor="@color/colorAccent"
+            android:elevation="10sp" />
+
+    </RelativeLayout>
+</LinearLayout>

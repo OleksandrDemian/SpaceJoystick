@@ -55,6 +55,21 @@
                     android:id="@+id/shipAttributesLayout"
                     android:padding="15sp">
 
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:ems="10"
+                        android:id="@+id/txtAbilityID"
+                        android:hint="ability" />
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:id="@+id/txtShipSkinID"
+                        android:inputType="number"
+                        android:hint="skin" />
                 </LinearLayout>
             </ScrollView>
 
@@ -74,8 +89,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/btnClear"
-                android:layout_alignBaseline="@+id/relativeLayout"
-                android:layout_alignBottom="@+id/relativeLayout"
+                android:layout_alignParentTop="true"
                 android:layout_alignParentStart="true" />
 
         </RelativeLayout>
