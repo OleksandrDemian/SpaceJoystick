@@ -7,7 +7,24 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="200sp">
+        android:layout_height="wrap_content"
+        android:padding="20sp">
 
+        <ImageView
+            app:srcCompat="@drawable/ship1"
+            android:id="@+id/imgSkin"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_width="40sp"
+            android:layout_height="40sp" />
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/spnSkin"
+            android:layout_alignBottom="@+id/imgSkin"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@+id/imgSkin"
+            android:layout_alignParentTop="true" />
     </RelativeLayout>
 </LinearLayout>

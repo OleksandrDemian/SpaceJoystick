@@ -38,9 +38,7 @@ public class Attribute {
         level ++;
     }
 
-    public void levelDown(){
-        level --;
-    }
+    public void levelDown(){ level --; }
 
     @Override
     public String toString() {

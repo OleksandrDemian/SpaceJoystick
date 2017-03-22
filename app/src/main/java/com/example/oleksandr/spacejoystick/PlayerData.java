@@ -2,6 +2,8 @@ package com.example.oleksandr.spacejoystick;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 
 /**
@@ -125,6 +127,10 @@ public class PlayerData {
     public int getPoints(){
         return points;
     }
+
+    public int getShipSkin() { return shipSkin; }
+
+    public int getAbility(){ return ability; }
 
     //--------------------------------SETTERS--------------------------------//
     public void setName(String name) {

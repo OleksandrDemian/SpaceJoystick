@@ -3,4 +3,15 @@
     <string name="title_activity_home">HomeActivity</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
+    <string-array name="ship_skins">
+        <item>Skin1</item>
+        <item>Skin2</item>
+        <item>Skin3</item>
+        <item>Skin4</item>
+    </string-array>
+
+    <string-array name="abilities">
+        <item>Shield recovery</item>
+        <item>Circle fire</item>
+    </string-array>
 </resources>

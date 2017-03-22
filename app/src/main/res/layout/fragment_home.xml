@@ -31,10 +31,24 @@
         android:textAlignment="center"
         android:textColor="@color/colorAccent"
         android:hint="Type game ip here"
-        android:inputType="text"
         android:fontFamily="monospace"
         android:layout_above="@+id/btnConnect"
         android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:textSize="20sp"
+        android:inputType="none"
+        android:singleLine="false"
+        android:textAllCaps="false" />
+
+    <TextView
+        android:text="Swipe to ship customization ->"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/textView2"
+        android:layout_alignEnd="@+id/btnConnect"
+        android:textAlignment="center"
+        android:textColor="@color/inputHint" />
 
 </RelativeLayout>

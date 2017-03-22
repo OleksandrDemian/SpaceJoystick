@@ -36,6 +36,7 @@ public class ConnectionScreen extends Fragment {
 
         final EditText ipText = (EditText)view.findViewById(R.id.ip);
         ipText.setText(getLastIP());
+        ipText.setSelected(false);
 
         Button connect = (Button)view.findViewById(R.id.btnConnect);
         connect.setOnClickListener(new View.OnClickListener() {
