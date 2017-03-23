@@ -28,6 +28,14 @@ public class ShipScreen extends Fragment {
     public ShipScreen() {}
 
     @Override
+    public void onResume() {
+        super.onResume();
+        playerData.loadPlayer();
+        pointsText = (TextView) view.findViewById(R.id.txtPoints);
+        pointsText.setText("Points: " + playerData.getPoints());
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.ship_fragment, container, false);
 
@@ -36,9 +44,6 @@ public class ShipScreen extends Fragment {
 
         final EditText txtName = (EditText)view.findViewById(R.id.txtName);
         txtName.setText(playerData.getName());
-
-        pointsText = (TextView) view.findViewById(R.id.txtPoints);
-        pointsText.setText("Points: " + playerData.getPoints());
 
         /*Button clear = (Button)view.findViewById(R.id.btnClear);
         clear.setOnClickListener(new View.OnClickListener() {
@@ -92,7 +97,7 @@ public class ShipScreen extends Fragment {
     private void addAbilitySpinner(){
         Spinner abilities = (Spinner) view.findViewById(R.id.abilitySpinner);
         ArrayAdapter<CharSequence> strings = ArrayAdapter.createFromResource(getContext(), R.array.abilities,
-                        android.R.layout.simple_spinner_item);
+                        R.layout.spinner_item);
         strings.setDropDownViewResource(R.layout.spinner_item);
         abilities.setAdapter(strings);
         abilities.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -137,7 +142,7 @@ public class ShipScreen extends Fragment {
         //imageView.setImageResource(R.drawable.ship1 + playerData.getShipSkin());
 
         ArrayAdapter<CharSequence> strings = ArrayAdapter.createFromResource(getContext(), R.array.ship_skins,
-                android.R.layout.simple_spinner_item);
+                R.layout.spinner_item);
 
         strings.setDropDownViewResource(R.layout.spinner_item);
         abilities.setAdapter(strings);

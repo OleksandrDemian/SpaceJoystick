@@ -107,12 +107,17 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
 
     @Override
     public void onMessageReceived(final String message) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
-            }
-        });
+
+        System.out.println("Receive activity: " + message);
+        //NOT TESTED
+        switch (message){
+            case "rp":
+                playerData.incresePoints();
+                break;
+            case "rm":
+                finish();
+                break;
+        }
     }
 
     @Override

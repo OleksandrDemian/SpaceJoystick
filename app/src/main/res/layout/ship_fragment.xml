@@ -10,18 +10,6 @@
         android:layout_height="match_parent"
         android:layout_weight="1">
 
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:text="Name"
-            android:ems="10"
-            android:id="@+id/txtName"
-            android:textAlignment="center"
-            android:textColor="@color/colorAccent"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentStart="true" />
-
         <Button
             android:text="Save"
             android:layout_width="wrap_content"
@@ -37,9 +25,9 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/txtName"
             android:layout_alignParentStart="true"
-            android:layout_above="@+id/btnSavePlayer">
+            android:layout_above="@+id/btnSavePlayer"
+            android:layout_alignParentTop="true">
 
             <ScrollView
                 android:layout_width="match_parent"
@@ -55,14 +43,28 @@
                     android:id="@+id/shipAttributesLayout"
                     android:padding="15sp">
 
-                    <TextView
-                        android:text="Attributes"
+                    <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/textView"
-                        android:textSize="20sp"
+                        android:inputType="textPersonName"
+                        android:text="Name"
+                        android:ems="10"
+                        android:id="@+id/txtName"
                         android:textAlignment="center"
-                        android:textColor="@color/colorAccent" />
+                        android:textColor="@color/colorAccent"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentStart="true" />
+
+                    <TextView
+                        android:text="Points: 5"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/txtPoints"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentStart="true"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="20sp"
+                        android:textAlignment="center" />
 
                     <Spinner
                         android:layout_width="match_parent"
@@ -70,20 +72,10 @@
                         android:id="@+id/abilitySpinner"
                         android:background="@color/background"
                         android:popupBackground="@color/background"
-                        android:padding="20sp" />
+                        android:paddingTop="10sp"
+                        android:paddingBottom="10sp" />
                 </LinearLayout>
             </ScrollView>
-
-            <TextView
-                android:text="Points: 5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/txtPoints"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentStart="true"
-                android:textColor="@color/colorAccent"
-                android:textSize="20sp"
-                android:textAlignment="center" />
 
         </RelativeLayout>
 

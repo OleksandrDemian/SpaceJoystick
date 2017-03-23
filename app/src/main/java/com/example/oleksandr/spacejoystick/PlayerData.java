@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 public class PlayerData {
 
+    public static PlayerData instance;
     private Context context;
 
     private String name;
@@ -48,8 +49,7 @@ public class PlayerData {
     }
 
     public void savePlayer(){
-        SharedPreferences sharedPreferences = context.getSharedPreferences("player", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+        SharedPreferences.Editor editor = getEditor();
 
         editor.putString("name", name);
         editor.putInt("shipSkin", shipSkin);
@@ -68,10 +68,14 @@ public class PlayerData {
     }
 
     public void clearSavedData(){
-        SharedPreferences sharedPreferences = context.getSharedPreferences("player", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+        SharedPreferences.Editor editor = getEditor();
         editor.clear();
         editor.commit();
+    }
+
+    public SharedPreferences.Editor getEditor(){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("player", Context.MODE_PRIVATE);
+        return sharedPreferences.edit();
     }
 
     public String[] getShipInfoArray(){
@@ -109,6 +113,15 @@ public class PlayerData {
 
     public void decresePoints(){
         points --;
+    }
+
+    //NOT TESTED
+    public void incresePoints(){
+        points ++;
+        SharedPreferences.Editor editor = getEditor();
+        editor.putInt("points", points);
+        System.out.println("Points: " + points);
+        editor.commit();
     }
 
     //--------------------------------GETTERS--------------------------------//

@@ -22,6 +22,7 @@ public class Client extends Thread {
             socket = new Socket(ip, port);
             writer = new PrintWriter(socket.getOutputStream());
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            start();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -35,6 +36,7 @@ public class Client extends Thread {
         while (true){
             try {
                 String message = reader.readLine();
+                System.out.println("Receive: " + message);
                 if(clientListener != null){
                     clientListener.onMessageReceived(message);
                 }

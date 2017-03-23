@@ -6,6 +6,6 @@
     android:textSize="20sp"
     android:background="@color/background"
     android:text="ciao"
-    android:padding="20sp">
+    android:padding="10sp">
 
 </TextView>
