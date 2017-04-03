@@ -7,4 +7,5 @@ package com.example.oleksandr.spacejoystick;
 public interface ClientListener {
     void onMessageReceived(String message);
     void onMessageSendSuccess();
+    void onConnectionEvent(ConnectionEvent event);
 }

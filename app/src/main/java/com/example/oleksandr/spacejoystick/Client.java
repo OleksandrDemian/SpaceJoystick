@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 /**
@@ -12,20 +13,40 @@ import java.net.Socket;
 
 public class Client extends Thread {
 
+    public static final int PORT = 6546;
+    public static Client instance;
     private Socket socket;
     private PrintWriter writer;
     private BufferedReader reader;
     private ClientListener clientListener;
 
-    public Client(String ip, int port) {
+    public Client(){
+        if(instance != null)
+            instance.stopClient();
+
+        instance = this;
+    }
+
+    public void connect(String ip, int port) {
         try {
-            socket = new Socket(ip, port);
+            socket = new Socket();
+            socket.connect(new InetSocketAddress(ip, port), 3000);
             writer = new PrintWriter(socket.getOutputStream());
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            instance = this;
             start();
+            if(clientListener != null) clientListener.onConnectionEvent(ConnectionEvent.CONNECTED);
         } catch (IOException e) {
+            if(clientListener != null) clientListener.onConnectionEvent(ConnectionEvent.CONNECTION_FAILED);
             e.printStackTrace();
         }
+    }
+
+    public static Client getInstance(){
+        //PAY ATTENTION!!!
+        if(instance == null)
+            return new Client();
+        return instance;
     }
 
     public void setClientListener(ClientListener listener){
@@ -41,6 +62,8 @@ public class Client extends Thread {
                     clientListener.onMessageReceived(message);
                 }
             } catch (IOException e) {
+                if(clientListener != null)
+                    clientListener.onConnectionEvent(ConnectionEvent.CONNECTION_STOPED);
                 e.printStackTrace();
             }
         }
@@ -80,5 +103,14 @@ public class Client extends Thread {
             message += ":" + dati[i];
         }
         sendMessage(message);
+    }
+
+    public void stopClient(){
+        try {
+            interrupt();
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

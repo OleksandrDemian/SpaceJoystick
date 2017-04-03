@@ -8,6 +8,7 @@ import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Layout;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
@@ -44,13 +45,10 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
         playerData = new PlayerData(getApplicationContext());
         playerData.loadPlayer();
 
-        //abilityTimer = new Timer(playerData.getAbilityCoolDown(), true);
-        //fireTimer = new Timer(playerData.getFireCoolDown(), true);
-
         //vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
 
         requestPermission();
-        startClient();
+        initializePlayer();
 
         ImageButton left = (ImageButton) findViewById(R.id.btnLeft);
         ImageButton right = (ImageButton) findViewById(R.id.btnRight);
@@ -58,44 +56,6 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
         ImageButton ability = (ImageButton) findViewById(R.id.btnAbility);
 
         final ImageButton engine = (ImageButton) findViewById(R.id.btnEngine);
-
-        /*left.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                client.send(Command.TURNLEFT);
-            }
-        });
-
-        right.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                client.send(Command.TURNRIGHT);
-            }
-        });*/
-
-        /*engine.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                client.send(Command.ENGINETRIGGER);
-            }
-        });
-
-        shoot.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(fireTimer.passed())
-                    client.send(Command.FIRE);
-            }
-        });
-
-        ability.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                System.out.println("Delta: " + abilityTimer.deltaTime());
-                if(abilityTimer.passed())
-                    client.send(Command.ABILITYTRIGGER);
-            }
-        });*/
 
         //<-----------------NEW INPUT------------------------------->
         left.setOnTouchListener(new View.OnTouchListener() {
@@ -162,36 +122,41 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
 
     }
 
-    private void startClient(){
+    private void initializePlayer(){
         if(client != null)
             return;
 
-        final ClientListener listener = this;
-        Thread thread = new Thread(new Runnable() {
+        client = Client.getInstance();
+        client.setClientListener(this);
+        client.sendMessage("rn" + playerData.getName());
+        //String[] dati = { "50", "15", "3", "500", "1", "3", "2" };
+        client.send(Request.SHIPINFO, playerData.getShipInfoArray());
+    }
+
+    private void showJoystick(){
+        runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                String ip = getIntent().getExtras().getString("ip", "null");
-                client = new Client(ip, 6546);
-                client.setClientListener(listener);
-                client.sendMessage("rn" + playerData.getName());
-
-                //Dati order: health, damage, shield, speed, shipSkin, abilityType, abilityLevel
-                //String[] dati = { "50", "15", "3", "500", "1", "3", "2" };
-                client.send(Request.SHIPINFO, playerData.getShipInfoArray());
+                RelativeLayout joystick = (RelativeLayout)findViewById(R.id.joystickLayout);
+                RelativeLayout waitLayout = (RelativeLayout)findViewById(R.id.waitLayout);
+                waitLayout.setVisibility(View.INVISIBLE);
+                joystick.setVisibility(View.VISIBLE);
             }
         });
-        thread.start();
+
     }
 
     @Override
     public void onMessageReceived(final String message) {
-
+        if(message == "")
+            return;
         System.out.println("Receive activity: " + message);
         //NOT TESTED
         if(message.charAt(0) == 'r') {
             switch (message.charAt(1)) {
                 //rs - start game
                 case 's':
+                    showJoystick();
                     break;
                 case 'p':
                     playerData.incresePoints();
@@ -199,6 +164,8 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
                 //Set background color here
                 case 'c':
                     setBackgroundColor(Integer.parseInt("" + message.charAt(2)));
+                    //TEMP
+                    showJoystick();
                     break;
                 case 'm':
                     client.interrupt();
@@ -213,14 +180,33 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
         //vibrator.vibrate(25);
     }
 
+    @Override
+    public void onConnectionEvent(ConnectionEvent event) {
+        switch (event){
+
+        }
+    }
+
     private void setBackgroundColor(final int index){
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 RelativeLayout background = (RelativeLayout)findViewById(R.id.activity_main);
-                int color = Converter.toColor(index);
-                if(color == -1)
-                    color = getResources().getColor(R.color.background);
+                int color = getResources().getColor(R.color.background);
+                switch (index){
+                    case 0:
+                        color = getResources().getColor(R.color.bgBlue);
+                        break;
+                    case 1:
+                        color = getResources().getColor(R.color.bgGreen);
+                        break;
+                    case 2:
+                        color = getResources().getColor(R.color.bgRed);
+                        break;
+                    case 3:
+                        color = getResources().getColor(R.color.bgOrange);
+                        break;
+                }
                 background.setBackgroundColor(color);
             }
         });
@@ -252,41 +238,12 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
                         string += "e";
                         engineB = false;
                     }
-                    /*if(fireB)
-                        string += "s";
-                        //addCommand(Command.FIRE);
-                    if(engineB) {
-                        string += "e";
-                        engineB = false;
-                    }
-                        //addCommand(Command.ENGINETRIGGER);
-                    if(leftB)
-                        string += "l";
-                    if(rightB)
-                        string += "r";
-                    if(abilityB)
-                        string += "a";*/
-                    /*for(int i = 0; i < commands.size(); i++) {
-                        System.out.println("Pressed: " + commands.toString());
-                        string += Converter.toString(commands.get(i)).charAt(1);
-                    }*/
 
                     client.sendMessage(string);
-                    //commands.clear();
-                    /*fireB = false;
-                    engineB = false;
-                    rightB = false;
-                    leftB = false;
-                    abilityB = false;*/
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         }
-
-        /*public void addCommand(Command command){
-            commands.add(command);
-        }*/
-
     }
 }

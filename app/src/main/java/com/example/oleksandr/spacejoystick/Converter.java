@@ -24,20 +24,6 @@ public class Converter {
         return "unknown";
     }
 
-    public static int toColor(int index){
-        switch (index){
-            case 0:
-                return Color.BLUE;
-            case 1:
-                return Color.GREEN;
-            case 2:
-                return Color.RED;
-            case 3:
-                return Color.YELLOW;
-        }
-        return -1;
-    }
-
     public static char toChar(Command command){
         switch (command){
             case TURNLEFT:
