@@ -19,6 +19,7 @@ public class Client extends Thread {
     private PrintWriter writer;
     private BufferedReader reader;
     private ClientListener clientListener;
+    private boolean isRunning = false;
 
     public Client(){
         if(instance != null)
@@ -35,6 +36,7 @@ public class Client extends Thread {
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             instance = this;
             start();
+            isRunning = true;
             if(clientListener != null) clientListener.onConnectionEvent(ConnectionEvent.CONNECTED);
         } catch (IOException e) {
             if(clientListener != null) clientListener.onConnectionEvent(ConnectionEvent.CONNECTION_FAILED);
@@ -54,19 +56,20 @@ public class Client extends Thread {
     }
 
     public void run(){
-        while (true){
-            try {
-                String message = reader.readLine();
-                System.out.println("Receive: " + message);
-                if(clientListener != null){
-                    clientListener.onMessageReceived(message);
-                }
-            } catch (IOException e) {
-                if(clientListener != null)
-                    clientListener.onConnectionEvent(ConnectionEvent.CONNECTION_STOPED);
-                e.printStackTrace();
+        //while (true){
+        try {
+            String message = reader.readLine();
+            System.out.println("Receive: " + message);
+            if(clientListener != null){
+                clientListener.onMessageReceived(message);
             }
+            run();
+        } catch (IOException e) {
+            if(clientListener != null)
+                clientListener.onConnectionEvent(ConnectionEvent.CONNECTION_STOPED);
+            e.printStackTrace();
         }
+        //}
     }
 
     public void sendMessage(String message){
@@ -106,6 +109,9 @@ public class Client extends Thread {
     }
 
     public void stopClient(){
+        if(!isRunning)
+            return;
+
         try {
             interrupt();
             socket.close();

@@ -168,11 +168,15 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
                     showJoystick();
                     break;
                 case 'm':
-                    client.interrupt();
-                    finish();
+                    toMainScreen();
                     break;
             }
         }
+    }
+
+    private void toMainScreen(){
+        client.interrupt();
+        finish();
     }
 
     @Override
@@ -183,7 +187,9 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
     @Override
     public void onConnectionEvent(ConnectionEvent event) {
         switch (event){
-
+            case CONNECTION_STOPED:
+                toMainScreen();
+                break;
         }
     }
 

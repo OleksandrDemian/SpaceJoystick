@@ -96,7 +96,7 @@ public class ConnectionScreen extends Fragment implements ClientListener {
 
     @Override
     public void onConnectionEvent(ConnectionEvent event) {
-        System.out.println("Event: " + event.toString());
+        System.out.println("(Connection screen)Event: " + event.toString());
         switch (event){
             case CONNECTED:
                 Intent intent = new Intent(getActivity().getApplicationContext(), MainActivity.class);

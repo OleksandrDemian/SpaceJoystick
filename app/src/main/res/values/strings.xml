@@ -13,5 +13,7 @@
     <string-array name="abilities">
         <item>Shield recovery</item>
         <item>Circle fire</item>
+        <item>Destroy shields</item>
+        <item>Disable controll</item>
     </string-array>
 </resources>
