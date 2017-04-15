@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -29,6 +30,9 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
     /*private boolean fireB = false;
     private boolean leftB = false;
     private boolean rightB = false;*/
+
+    private TextView healthView;
+    private TextView shieldView;
 
     private boolean engineB = false;
     //<------------ARRAY???------------------>//
@@ -50,12 +54,19 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
         requestPermission();
         initializePlayer();
 
+        shieldView = (TextView) findViewById(R.id.joystickShields);
+        healthView = (TextView) findViewById(R.id.joystickHealth);
+
+        setTextToTextView(healthView, String.valueOf(playerData.getAttribute("health").getValue()));
+        setTextToTextView(shieldView, String.valueOf(playerData.getAttribute("shield").getValue()));
+
         ImageButton left = (ImageButton) findViewById(R.id.btnLeft);
         ImageButton right = (ImageButton) findViewById(R.id.btnRight);
         ImageButton shoot = (ImageButton) findViewById(R.id.btnShoot);
         ImageButton ability = (ImageButton) findViewById(R.id.btnAbility);
 
         final ImageButton engine = (ImageButton) findViewById(R.id.btnEngine);
+        hideJoystick();
 
         //<-----------------NEW INPUT------------------------------->
         left.setOnTouchListener(new View.OnTouchListener() {
@@ -133,6 +144,18 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
         client.send(Request.SHIPINFO, playerData.getShipInfoArray());
     }
 
+    private void hideJoystick(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                RelativeLayout joystick = (RelativeLayout)findViewById(R.id.joystickLayout);
+                RelativeLayout waitLayout = (RelativeLayout)findViewById(R.id.waitLayout);
+                waitLayout.setVisibility(View.VISIBLE);
+                joystick.setVisibility(View.INVISIBLE);
+            }
+        });
+    }
+
     private void showJoystick(){
         runOnUiThread(new Runnable() {
             @Override
@@ -143,13 +166,13 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
                 joystick.setVisibility(View.VISIBLE);
             }
         });
-
     }
 
     @Override
     public void onMessageReceived(final String message) {
         if(message == "")
             return;
+
         System.out.println("Receive activity: " + message);
         //NOT TESTED
         if(message.charAt(0) == 'r') {
@@ -172,6 +195,26 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
                     break;
             }
         }
+        if(message.charAt(0) == 'i') {
+            switch (message.charAt(1)) {
+                //rs - start game
+                case 's':
+                    setTextToTextView(shieldView, "Shield: " + message.substring(2));
+                    break;
+                case 'h':
+                    setTextToTextView(healthView, "Health: " + message.substring(2));
+                    break;
+            }
+        }
+    }
+
+    private void setTextToTextView(final TextView view, final String text){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                view.setText(text);
+            }
+        });
     }
 
     private void toMainScreen(){

@@ -15,8 +15,36 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/waitLayout"
+        android:visibility="visible">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:srcCompat="@color/background"
+            android:id="@+id/imageView" />
+
+        <TextView
+            android:text="Wait for start"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView"
+            android:textAlignment="center"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:textSize="25sp"
+            android:textColor="@color/colorAccent"
+            android:layout_alignParentBottom="true"
+            android:gravity="center_vertical" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:id="@+id/joystickLayout"
-        android:visibility="invisible">
+        android:visibility="invisible"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
 
         <ImageButton
             android:layout_width="90sp"
@@ -66,30 +94,28 @@
             android:layout_marginTop="53dp"
             android:layout_alignTop="@+id/btnEngine"
             android:layout_toStartOf="@+id/btnShoot" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/waitLayout"
-        android:visibility="visible">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:srcCompat="@color/background"
-            android:id="@+id/imageView" />
 
         <TextView
-            android:text="Wait for start"
-            android:layout_width="match_parent"
+            android:text="Health: 15"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textView"
-            android:textAlignment="center"
+            android:id="@+id/joystickHealth"
+            android:textColor="@color/colorAccent"
+            android:textSize="20sp"
+            android:padding="10sp"
             android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"
-            android:textSize="25sp"
-            android:textColor="@color/colorAccent" />
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:text="Shield: 15"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/joystickShields"
+            android:textColor="@color/colorAccent"
+            android:textSize="20sp"
+            android:padding="10sp"
+            android:layout_below="@+id/joystickHealth"
+            android:layout_alignParentStart="true" />
     </RelativeLayout>
 
 </RelativeLayout>
