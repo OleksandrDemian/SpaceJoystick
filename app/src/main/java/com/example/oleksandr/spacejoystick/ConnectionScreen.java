@@ -19,9 +19,12 @@ import android.widget.Toast;
 
 public class ConnectionScreen extends Fragment implements ClientListener {
 
-    private View view;
-    private Client client;
+    private View view;      //Fragment's view
+    private Client client;  //Connection
 
+    /**
+     * Empty constructor required for fragments
+     */
     public ConnectionScreen() {
 
     }
@@ -36,72 +39,88 @@ public class ConnectionScreen extends Fragment implements ClientListener {
     public void onStart() {
         super.onStart();
 
-        final EditText ipText = (EditText)view.findViewById(R.id.ip);
-        ipText.setText(getLastIP());
-        ipText.setSelected(false);
+        final EditText ipText = (EditText)view.findViewById(R.id.ip);   //Text where you type the game ip
+        ipText.setText(getLastIP());                                    //Set the last inserted ip
 
-        client = new Client();
+        client = new Client();                                          //Initialize client
 
-        Button connect = (Button)view.findViewById(R.id.btnConnect);
+        Button connect = (Button)view.findViewById(R.id.btnConnect);    //Start connection to the server when pressed
         connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String ip = ipText.getText().toString();
-                saveIP(ip);
-                startClient(ip, Client.PORT);
-                /*Intent intent = new Intent(getActivity().getApplicationContext(), MainActivity.class);
-                intent.putExtra("ip", ip);
-                startActivity(intent);*/
+                String ip = ipText.getText().toString();                //Get the ip
+                saveIP(ip);                                             //Save the ip as last ip
+                startClient(ip, Client.PORT);                           //Connection to the server
             }
         });
     }
 
+    /**
+     * Starts connection thread
+     * @param ip -> server ip
+     * @param port -> server port
+     */
     private void startClient(final String ip, final int port){
         Thread connect = new Thread(new Runnable() {
             @Override
             public void run() {
                 client.setClientListener(ConnectionScreen.this);
                 client.connect(ip, port);
-                /*client.sendMessage("rn" + playerData.getName());
-
-                //Dati order: health, damage, shield, speed, shipSkin, abilityType, abilityLevel
-                //String[] dati = { "50", "15", "3", "500", "1", "3", "2" };
-                client.send(Request.SHIPINFO, playerData.getShipInfoArray());*/
             }
         });
         Toast.makeText(getContext(), "Connecting to: " + ip, Toast.LENGTH_SHORT).show();
         connect.start();
     }
 
+    /**
+     * @return last saved ip
+     */
     private String getLastIP(){
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("player", Context.MODE_PRIVATE);
         return sharedPreferences.getString("lastIP", "");
     }
 
+    /**
+     * Save ip to shared preferences
+     * @param ip that must be saved
+     */
     private void saveIP(String ip){
         SharedPreferences.Editor spEditor = getContext().getSharedPreferences("player", Context.MODE_PRIVATE).edit();
         spEditor.putString("lastIP", ip);
         spEditor.commit();
     }
 
+    /**
+     * Unused but required by ClientListener
+     * @param message
+     */
     @Override
     public void onMessageReceived(String message) {
         return;
     }
 
+    /**
+     * Unused but required by ClientListener
+     */
     @Override
     public void onMessageSendSuccess() {
         return;
     }
 
+    /**
+     * Is triggered each time connection change it's state
+     * @param event
+     */
     @Override
     public void onConnectionEvent(ConnectionEvent event) {
         System.out.println("(Connection screen)Event: " + event.toString());
         switch (event){
+            //If connected, starts joystick activity
             case CONNECTED:
                 Intent intent = new Intent(getActivity().getApplicationContext(), MainActivity.class);
                 startActivity(intent);
                 break;
+            //If failed, shows error message
             case CONNECTION_FAILED:
                 getActivity().runOnUiThread(new Runnable() {
                     @Override

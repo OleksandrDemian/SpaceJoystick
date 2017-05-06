@@ -1,41 +1,30 @@
 package com.example.oleksandr.spacejoystick;
 
-import android.Manifest;
-import android.content.Context;
-import android.graphics.Color;
-import android.os.Build;
-import android.os.Vibrator;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Layout;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.ArrayList;
+//Documented
 
+/**
+ * Joystic screen
+ */
 public class MainActivity extends AppCompatActivity implements ClientListener {
 
-    private Client client;
-    private PlayerData playerData;
-    //private Vibrator vibrator;
-    private InputThread inputThread;
-    //private Timer abilityTimer;
-    //private Timer fireTimer;
+    private Client client;              //Connection to the game
+    private PlayerData playerData;      //Player's data
+    private InputThread inputThread;    //Thread that sends user's input
 
-    /*private boolean fireB = false;
-    private boolean leftB = false;
-    private boolean rightB = false;*/
+    private TextView healthView;        //Shows player's health
+    private TextView shieldView;        //Shows player's shield
 
-    private TextView healthView;
-    private TextView shieldView;
+    private boolean engineB = false;    //Engine state
 
-    private boolean engineB = false;
-    //<------------ARRAY???------------------>//
+    //Commands
     private CommandButtonState leftCommand = new CommandButtonState(Converter.toChar(Command.TURNLEFT));
     private CommandButtonState rightCommand = new CommandButtonState(Converter.toChar(Command.TURNRIGHT));
     private CommandButtonState fireCommand = new CommandButtonState(Converter.toChar(Command.FIRE));
@@ -46,29 +35,27 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        playerData = new PlayerData(getApplicationContext());
-        playerData.loadPlayer();
-
-        //vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
-
-        requestPermission();
         initializePlayer();
 
-        shieldView = (TextView) findViewById(R.id.joystickShields);
-        healthView = (TextView) findViewById(R.id.joystickHealth);
-
-        setTextToTextView(healthView, String.valueOf(playerData.getAttribute("health").getValue()));
-        setTextToTextView(shieldView, String.valueOf(playerData.getAttribute("shield").getValue()));
-
+        //Get buttons
         ImageButton left = (ImageButton) findViewById(R.id.btnLeft);
         ImageButton right = (ImageButton) findViewById(R.id.btnRight);
         ImageButton shoot = (ImageButton) findViewById(R.id.btnShoot);
         ImageButton ability = (ImageButton) findViewById(R.id.btnAbility);
-
         final ImageButton engine = (ImageButton) findViewById(R.id.btnEngine);
+
+        //Get views(health, shield)
+        shieldView = (TextView) findViewById(R.id.joystickShields);
+        healthView = (TextView) findViewById(R.id.joystickHealth);
+
+        //Set player's health and shield
+        setTextToTextView(healthView, "Health: " + String.valueOf(playerData.getAttribute("health").getValue()));
+        setTextToTextView(shieldView, "Shield: " + String.valueOf(playerData.getAttribute("shield").getValue()));
+
+        //Hide joystick before the game started
         hideJoystick();
 
-        //<-----------------NEW INPUT------------------------------->
+        //Buttons initialization
         left.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -120,30 +107,42 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
             }
         });
 
+        //Input thread initialization
         if(inputThread == null) {
             inputThread = new InputThread();
             inputThread.start();
         }
-        //<----------------FINE---------------------------------->
     }
 
-    private void requestPermission(){
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1)
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET, Manifest.permission.VIBRATE}, 1);
-
-    }
-
+    /**
+     * Used to get player's data and send them to game
+     */
     private void initializePlayer(){
+        //If client already exist, exit the function
         if(client != null)
             return;
 
-        client = Client.getInstance();
-        client.setClientListener(this);
-        client.sendMessage("rn" + playerData.getName());
-        //String[] dati = { "50", "15", "3", "500", "1", "3", "2" };
-        client.send(Request.SHIPINFO, playerData.getShipInfoArray());
+        //Load player's data
+        playerData = new PlayerData(getApplicationContext());
+        playerData.loadPlayer();
+
+        new Thread(new Runnable(){
+            @Override
+            public void run() {
+                //Client initialization
+                client = Client.getInstance();
+                client.setClientListener(MainActivity.this);
+
+                //PlayerInitialization
+                client.sendMessage("rn" + playerData.getName());
+                client.send(Request.SHIPINFO, playerData.getShipInfoArray());
+            }
+        }).start();
     }
 
+    /**
+     * Used to set invisible joystick layout
+     */
     private void hideJoystick(){
         runOnUiThread(new Runnable() {
             @Override
@@ -156,25 +155,36 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
         });
     }
 
+    /**
+     * Used to set visible joystick layout
+     */
     private void showJoystick(){
+        System.out.println("Show joystick from showJoystick");
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                System.out.println("Show joystick from runOnUiThread");
                 RelativeLayout joystick = (RelativeLayout)findViewById(R.id.joystickLayout);
                 RelativeLayout waitLayout = (RelativeLayout)findViewById(R.id.waitLayout);
                 waitLayout.setVisibility(View.INVISIBLE);
                 joystick.setVisibility(View.VISIBLE);
+                System.out.println("Show joystick fine");
             }
         });
     }
 
+    /**
+     * This method is triggered when there are new messages
+     * @param message - message received from connection
+     */
     @Override
     public void onMessageReceived(final String message) {
-        if(message == "")
+
+        if(message.length() < 1)
             return;
 
-        System.out.println("Receive activity: " + message);
         //NOT TESTED
+        //Requests
         if(message.charAt(0) == 'r') {
             switch (message.charAt(1)) {
                 //rs - start game
@@ -195,6 +205,8 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
                     break;
             }
         }
+
+        //Information
         if(message.charAt(0) == 'i') {
             switch (message.charAt(1)) {
                 //rs - start game
@@ -208,6 +220,11 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
         }
     }
 
+    /**
+     * This method is used to set text to textview
+     * @param view
+     * @param text
+     */
     private void setTextToTextView(final TextView view, final String text){
         runOnUiThread(new Runnable() {
             @Override
@@ -217,16 +234,26 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
         });
     }
 
+    /**
+     * Close the connection and open the main screen
+     */
     private void toMainScreen(){
         client.interrupt();
         finish();
     }
 
+    /**
+     * Is triggered when the message is sent without errors
+     */
     @Override
     public void onMessageSendSuccess() {
-        //vibrator.vibrate(25);
+        System.out.println("Inviato senza problemi");
     }
 
+    /**
+     * Is triggered when the connection state is changed
+     * @param event
+     */
     @Override
     public void onConnectionEvent(ConnectionEvent event) {
         switch (event){
@@ -236,6 +263,10 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
         }
     }
 
+    /**
+     * Sets the background color (color depends on player)
+     * @param index
+     */
     private void setBackgroundColor(final int index){
         runOnUiThread(new Runnable() {
             @Override
@@ -261,8 +292,12 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
         });
     }
 
+    /**
+     * Thread that sends players's input to the server
+     */
     private class InputThread extends Thread {
 
+        //Frequency of sending data per second
         private int frequency = 5;
 
         public void run(){

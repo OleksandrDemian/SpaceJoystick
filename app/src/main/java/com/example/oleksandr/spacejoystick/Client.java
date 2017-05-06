@@ -13,14 +13,17 @@ import java.net.Socket;
 
 public class Client extends Thread {
 
-    public static final int PORT = 6546;
-    public static Client instance;
-    private Socket socket;
-    private PrintWriter writer;
-    private BufferedReader reader;
-    private ClientListener clientListener;
-    private boolean isRunning = false;
+    public static final int PORT = 6546;    //Server's port
+    public static Client instance;          //Instance of the client
+    private Socket socket;                  //Socket
+    private PrintWriter writer;             //Used to write data to server
+    private BufferedReader reader;          //Read's data from server
+    private ClientListener clientListener;  //Listener
+    private boolean isRunning = false;      //Is client running
 
+    /**
+     * Default constructor
+     */
     public Client(){
         if(instance != null)
             instance.stopClient();
@@ -28,22 +31,36 @@ public class Client extends Thread {
         instance = this;
     }
 
+    /**
+     * Connect to the server
+     * @param ip -> destination address
+     * @param port -> destination port
+     */
     public void connect(String ip, int port) {
         try {
+            //Initialize socket
             socket = new Socket();
             socket.connect(new InetSocketAddress(ip, port), 3000);
+            //Initialize writer
             writer = new PrintWriter(socket.getOutputStream());
+            //Initialize reader
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
             instance = this;
             start();
             isRunning = true;
+            //Notifies listener about success
             if(clientListener != null) clientListener.onConnectionEvent(ConnectionEvent.CONNECTED);
         } catch (IOException e) {
+            //Notifies listener about failure
             if(clientListener != null) clientListener.onConnectionEvent(ConnectionEvent.CONNECTION_FAILED);
             e.printStackTrace();
         }
     }
 
+    /**
+     * @return the current instance of the client
+     */
     public static Client getInstance(){
         //PAY ATTENTION!!!
         if(instance == null)
@@ -51,27 +68,36 @@ public class Client extends Thread {
         return instance;
     }
 
+    //Set the client listener
     public void setClientListener(ClientListener listener){
         clientListener = listener;
     }
 
+    //Listens for messages from server
     public void run(){
-        //while (true){
-        try {
-            String message = reader.readLine();
-            System.out.println("Receive: " + message);
-            if(clientListener != null){
-                clientListener.onMessageReceived(message);
+        while (true){
+            try {
+                String message = reader.readLine();
+                System.out.println("Receive: " + message);
+                if(clientListener != null){
+                    clientListener.onMessageReceived(message);
+                }
+                //run();
+            } catch (IOException e) {
+                if(clientListener != null)
+                    clientListener.onConnectionEvent(ConnectionEvent.CONNECTION_STOPED);
+                e.printStackTrace();
+                System.out.println("ErrorSocket: " + e.getMessage());
+                System.out.println("ErrorSocket: " + e.getStackTrace());
+                return;
             }
-            run();
-        } catch (IOException e) {
-            if(clientListener != null)
-                clientListener.onConnectionEvent(ConnectionEvent.CONNECTION_STOPED);
-            e.printStackTrace();
         }
-        //}
     }
 
+    /**
+     * Sends message via socket
+     * @param message - message to send
+     */
     public void sendMessage(String message){
         System.out.println("Invio: " + message);
         try {
@@ -84,10 +110,19 @@ public class Client extends Thread {
         }
     }
 
+    /**
+     * Sends the command to server
+     * @param command
+     */
     public void send(Command command){
         sendMessage(Converter.toString(command));
     }
 
+    /**
+     * Sends the command with data to server
+     * @param command
+     * @param dati
+     */
     public void send(Command command, String[] dati){
         String message = Converter.toString(command);
         for(int i = 0; i < dati.length; i++){
@@ -96,10 +131,19 @@ public class Client extends Thread {
         sendMessage(message);
     }
 
+    /**
+     * Sends the request to server
+     * @param request
+     */
     public void send(Request request){
         sendMessage(Converter.toString(request));
     }
 
+    /**
+     * Sends the request with data to server
+     * @param request
+     * @param dati
+     */
     public void send(Request request, String[] dati){
         String message = Converter.toString(request);
         for(int i = 0; i < dati.length; i++){
@@ -108,6 +152,9 @@ public class Client extends Thread {
         sendMessage(message);
     }
 
+    /**
+     * Stops listening
+     */
     public void stopClient(){
         if(!isRunning)
             return;
