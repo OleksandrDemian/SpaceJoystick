@@ -1,4 +1,4 @@
-package com.example.oleksandr.spacejoystick;
+package com.zemian.spacejoystick;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,6 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.oleksandr.spacejoystick.R;
 
 /**
  * Created by Oleksandr on 14/02/2017.

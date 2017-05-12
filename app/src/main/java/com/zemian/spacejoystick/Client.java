@@ -1,4 +1,4 @@
-package com.example.oleksandr.spacejoystick;
+package com.zemian.spacejoystick;
 
 import java.io.BufferedReader;
 import java.io.IOException;

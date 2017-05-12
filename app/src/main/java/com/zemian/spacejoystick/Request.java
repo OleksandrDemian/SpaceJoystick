@@ -1,4 +1,4 @@
-package com.example.oleksandr.spacejoystick;
+package com.zemian.spacejoystick;
 
 /**
  * Created by Oleksandr on 19/02/2017.

@@ -6,7 +6,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.oleksandr.spacejoystick.HomeActivity$PlaceholderFragment"
+    tools:context="com.example.oleksandr.spacejoystick.com.zemian.spacejoystick.HomeActivity$PlaceholderFragment"
     android:background="@color/background">
 
     <Button
@@ -19,7 +19,6 @@
         android:elevation="9dp"
         android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"
-        android:layout_toEndOf="@+id/section_label"
         android:layout_alignParentStart="true"
         android:layout_margin="5sp" />
 

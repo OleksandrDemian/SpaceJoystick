@@ -1,8 +1,7 @@
-package com.example.oleksandr.spacejoystick;
+package com.zemian.spacejoystick;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 

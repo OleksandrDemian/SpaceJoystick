@@ -1,4 +1,4 @@
-package com.example.oleksandr.spacejoystick;
+package com.zemian.spacejoystick;
 
 import android.support.v7.app.AppCompatActivity;
 
@@ -9,6 +9,8 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.example.oleksandr.spacejoystick.R;
 
 public class HomeActivity extends AppCompatActivity {
 

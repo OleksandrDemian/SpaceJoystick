@@ -1,4 +1,4 @@
-package com.example.oleksandr.spacejoystick;
+package com.zemian.spacejoystick;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.example.oleksandr.spacejoystick.R;
 
 //Documented
 
@@ -159,16 +161,13 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
      * Used to set visible joystick layout
      */
     private void showJoystick(){
-        System.out.println("Show joystick from showJoystick");
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                System.out.println("Show joystick from runOnUiThread");
                 RelativeLayout joystick = (RelativeLayout)findViewById(R.id.joystickLayout);
                 RelativeLayout waitLayout = (RelativeLayout)findViewById(R.id.waitLayout);
                 waitLayout.setVisibility(View.INVISIBLE);
                 joystick.setVisibility(View.VISIBLE);
-                System.out.println("Show joystick fine");
             }
         });
     }

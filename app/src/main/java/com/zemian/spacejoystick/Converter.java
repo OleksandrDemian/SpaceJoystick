@@ -1,6 +1,4 @@
-package com.example.oleksandr.spacejoystick;
-
-import android.graphics.Color;
+package com.zemian.spacejoystick;
 
 /**
  * Created by Oleksandr on 18/02/2017.
