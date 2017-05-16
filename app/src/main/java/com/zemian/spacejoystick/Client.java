@@ -83,12 +83,13 @@ public class Client extends Thread {
                     clientListener.onMessageReceived(message);
                 }
                 //run();
-            } catch (IOException e) {
-                if(clientListener != null)
-                    clientListener.onConnectionEvent(ConnectionEvent.CONNECTION_STOPED);
-                e.printStackTrace();
+            } catch (Exception e) {
                 System.out.println("ErrorSocket: " + e.getMessage());
                 System.out.println("ErrorSocket: " + e.getStackTrace());
+
+                if(clientListener != null)
+                    clientListener.onConnectionEvent(ConnectionEvent.CONNECTION_STOPED);
+                //e.printStackTrace();
                 return;
             }
         }

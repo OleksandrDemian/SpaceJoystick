@@ -257,6 +257,7 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
     public void onConnectionEvent(ConnectionEvent event) {
         switch (event){
             case CONNECTION_STOPED:
+                client.stopClient();
                 toMainScreen();
                 break;
         }
@@ -297,12 +298,17 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
     private class InputThread extends Thread {
 
         //Frequency of sending data per second
-        private int frequency = 5;
+        private int frequency = 10;
 
         public void run(){
+            long mill = System.currentTimeMillis();
             while(true){
                 try {
                     Thread.sleep(1000/frequency);
+
+                    System.out.println("Time: " + ((System.currentTimeMillis() - mill)));
+                    mill = System.currentTimeMillis();
+
                     String string = "c";
 
                     if(leftCommand.mustBeSended())

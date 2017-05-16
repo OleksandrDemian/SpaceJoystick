@@ -26,7 +26,7 @@ public class PlayerData {
 
     public PlayerData(Context context){
         this.context = context;
-        attributes.add(new Attribute("health", 0, 5, 15));
+        attributes.add(new Attribute("health", 0, 10, 20));
         attributes.add(new Attribute("damage", 0, 3, 10));
         attributes.add(new Attribute("shield", 0, 1, 2));
         attributes.add(new Attribute("speed", 0, 50, 500));
