@@ -7,8 +7,10 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:padding="10sp"
-        android:layout_height="65sp">
+        android:padding="10dp"
+        android:layout_height="wrap_content"
+        android:background="@color/internalElements"
+        android:layout_margin="5dp">
 
         <TextView
             android:text="Name:"
@@ -17,32 +19,51 @@
             android:textSize="20sp"
             android:layout_centerVertical="true"
             android:layout_alignParentStart="true"
-            android:layout_toStartOf="@+id/txtAttrVal"
+            android:layout_toStartOf="@+id/btnAttrDown"
             android:layout_width="100sp"
             android:textColor="@color/colorAccent" />
 
         <TextView
-            android:text="10"
+            android:text="0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/txtAttrVal"
             android:textSize="20sp"
-            android:layout_alignBaseline="@+id/txtAttrName"
-            android:layout_alignBottom="@+id/txtAttrName"
-            android:layout_toStartOf="@+id/btnAttrUp"
-            android:paddingRight="20sp"
-            android:textColor="@color/colorAccent" />
+            android:textColor="@color/colorAccent"
+            android:textAlignment="center"
+            android:fontFamily="sans-serif-smallcaps"
+            android:layout_alignParentTop="true"
+            android:gravity="center"
+            android:padding="10dp"
+            android:layout_alignParentEnd="true"
+            android:layout_toEndOf="@+id/txtAttrName"
+            android:layout_alignBottom="@+id/btnAttrUp" />
 
         <Button
-            android:text="UP"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:id="@+id/btnAttrUp"
-            android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"
-            android:background="@color/internalElements"
+            android:background="@color/bgBlue"
             android:textColor="@color/colorAccent"
-            android:elevation="10sp" />
+            android:elevation="10sp"
+            android:text="+"
+            android:layout_width="50dp"
+            android:textSize="25sp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true" />
+
+        <Button
+            android:layout_height="50dp"
+            android:id="@+id/btnAttrDown"
+            android:background="@color/bgRed"
+            android:textColor="@color/colorAccent"
+            android:elevation="10sp"
+            android:text="-"
+            android:layout_width="50dp"
+            android:layout_marginEnd="53dp"
+            android:textSize="25sp"
+            android:layout_alignParentTop="true"
+            android:layout_toStartOf="@+id/btnAttrUp"
+            android:textAlignment="center" />
 
     </RelativeLayout>
 </LinearLayout>

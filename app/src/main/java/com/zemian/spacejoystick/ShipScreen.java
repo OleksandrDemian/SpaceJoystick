@@ -32,7 +32,6 @@ public class ShipScreen extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        playerData.loadPlayer();
         pointsText = (TextView) view.findViewById(R.id.txtPoints);
         pointsText.setText("Points: " + playerData.getPoints());
     }
@@ -41,8 +40,10 @@ public class ShipScreen extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.ship_fragment, container, false);
 
-        playerData = new PlayerData(getActivity().getApplicationContext());
-        playerData.loadPlayer();
+        if(playerData == null){
+            playerData = new PlayerData(getActivity().getApplicationContext());
+            playerData.loadPlayer();
+        }
 
         final EditText txtName = (EditText)view.findViewById(R.id.txtName);
         txtName.setText(playerData.getName());
@@ -58,14 +59,15 @@ public class ShipScreen extends Fragment {
         LinearLayout layout = (LinearLayout) view.findViewById(R.id.shipAttributesLayout);
         //LayoutInflater viewInflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
+        layout.addView(getSkinChooserView(inflater), layout.getChildCount() - 1);
+        layout.addView(getAbilityChooserView(inflater), layout.getChildCount() - 1);
+
         int attributesCount = playerData.getAttributesCount();
         for(int i = 0; i < attributesCount; i++){
-            layout.addView(getAttributeView(playerData.getAttribute(i), inflater));
+            layout.addView(getAttributeView(playerData.getAttribute(i), inflater), layout.getChildCount() - 1);
         }
 
-        addAbilitySpinner();
-
-        layout.addView(getSkinChooserView(inflater));
+        //addAbilitySpinner();
 
         //final EditText abilityID = (EditText) view.findViewById(R.id.txtAbilityID);
         //final EditText shipSkinID = (EditText) view.findViewById(R.id.txtShipSkinID);
@@ -96,10 +98,47 @@ public class ShipScreen extends Fragment {
         return nameText.getText().toString();
     }
 
+    private View getAttributeView(final Attribute attribute, LayoutInflater inflater){
+        View view = inflater.inflate(R.layout.attribute_layout, null);
+        final TextView name = (TextView) view.findViewById(R.id.txtAttrName);
+        final TextView value = (TextView) view.findViewById(R.id.txtAttrVal);
+        Button levelUp = (Button) view.findViewById(R.id.btnAttrUp);
+        Button levelDown = (Button) view.findViewById(R.id.btnAttrDown);
+        name.setText(attribute.getName());
+        value.setText(String.valueOf(attribute.getValue()));
+
+        levelUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(playerData.getPoints() < 1)
+                    return;
+
+                attribute.levelUp();
+                playerData.decresePoints();
+                value.setText(String.valueOf(attribute.getValue()));
+                pointsText.setText("Points: " + playerData.getPoints());
+            }
+        });
+
+        levelDown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(attribute.getLevel() < 1)
+                    return;
+
+                attribute.levelDown();
+                playerData.incresePoints();
+                value.setText(String.valueOf(attribute.getValue()));
+                pointsText.setText("Points: " + playerData.getPoints());
+            }
+        });
+        return view;
+    }
+    /*
     private void addAbilitySpinner(){
         Spinner abilities = (Spinner) view.findViewById(R.id.abilitySpinner);
         ArrayAdapter<CharSequence> strings = ArrayAdapter.createFromResource(getContext(), R.array.abilities,
-                        R.layout.spinner_item);
+                R.layout.spinner_item);
         strings.setDropDownViewResource(R.layout.spinner_item);
         abilities.setAdapter(strings);
         abilities.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -113,25 +152,28 @@ public class ShipScreen extends Fragment {
         });
         abilities.setSelection(playerData.getAbility());
     }
+    */
+    private View getAbilityChooserView(LayoutInflater inflater){
+        View view = inflater.inflate(R.layout.ability_chooser, null);
 
-    private View getAttributeView(final Attribute attribute, LayoutInflater inflater){
-        View view = inflater.inflate(R.layout.attribute_layout, null);
-        final TextView name = (TextView) view.findViewById(R.id.txtAttrName);
-        final TextView value = (TextView) view.findViewById(R.id.txtAttrVal);
-        Button levelUp = (Button) view.findViewById(R.id.btnAttrUp);
-        name.setText(attribute.getName());
-        value.setText(String.valueOf(attribute.getValue()));
-        levelUp.setOnClickListener(new View.OnClickListener() {
+        Spinner abilities = (Spinner) view.findViewById(R.id.spnAbility);
+
+        ArrayAdapter<CharSequence> strings = ArrayAdapter.createFromResource(getContext(), R.array.abilities,
+                R.layout.spinner_item);
+
+        strings.setDropDownViewResource(R.layout.spinner_item);
+        abilities.setAdapter(strings);
+        abilities.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onClick(View v) {
-                if(playerData.getPoints() < 1)
-                    return;
-                attribute.levelUp();
-                playerData.decresePoints();
-                value.setText(String.valueOf(attribute.getValue()));
-                pointsText.setText("Points: " + playerData.getPoints());
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                playerData.setAbility(position);
             }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
+        abilities.setSelection(playerData.getAbility());
+
         return view;
     }
 

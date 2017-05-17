@@ -21,6 +21,19 @@
         android:layout_margin="0dp"
         android:background="@drawable/splash">
 
+        <Button
+            android:text="Start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_startGame"
+            android:layout_below="@+id/joystickShields"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:elevation="10dp"
+            android:background="@color/bgBlue"
+            android:layout_margin="20dp"
+            android:textColor="@color/colorAccent" />
+
         <TextView
             android:text="Wait for start"
             android:layout_width="match_parent"
@@ -31,8 +44,8 @@
             android:layout_alignParentStart="true"
             android:textSize="25sp"
             android:textColor="@color/colorAccent"
-            android:layout_alignParentBottom="true"
-            android:gravity="center_vertical" />
+            android:gravity="center_vertical"
+            android:layout_above="@+id/btn_startGame" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -114,6 +127,7 @@
             android:padding="10sp"
             android:layout_below="@+id/joystickHealth"
             android:layout_alignParentStart="true" />
+
     </RelativeLayout>
 
 </RelativeLayout>

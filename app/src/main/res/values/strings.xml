@@ -4,10 +4,10 @@
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string-array name="ship_skins">
-        <item>Skin1</item>
-        <item>Skin2</item>
-        <item>Skin3</item>
-        <item>Skin4</item>
+        <item>Night Jack</item>
+        <item>Diego Uncharted</item>
+        <item>Igorz-28</item>
+        <item>Mary-1</item>
     </string-array>
 
     <string-array name="abilities">

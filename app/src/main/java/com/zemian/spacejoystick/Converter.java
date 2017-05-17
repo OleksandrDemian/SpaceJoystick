@@ -44,6 +44,8 @@ public class Converter {
                 return "rn";
             case SHIPINFO:
                 return "rs";
+            case STARTGAME:
+                return "rg";
         }
         return "";
     }

@@ -100,7 +100,7 @@ public class Client extends Thread {
      * @param message - message to send
      */
     public void sendMessage(String message){
-        System.out.println("Invio: " + message);
+        //System.out.println("Invio: " + message);
         try {
             writer.println(message);
             writer.flush();

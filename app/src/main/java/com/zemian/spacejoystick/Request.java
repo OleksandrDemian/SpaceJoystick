@@ -6,5 +6,6 @@ package com.zemian.spacejoystick;
 
 public enum Request {
     NAME,
-    SHIPINFO
+    SHIPINFO,
+    STARTGAME
 }

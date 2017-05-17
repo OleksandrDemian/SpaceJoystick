@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -36,10 +37,10 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         initializePlayer();
 
         //Get buttons
+        Button btnStart = (Button)findViewById(R.id.btn_startGame);
         ImageButton left = (ImageButton) findViewById(R.id.btnLeft);
         ImageButton right = (ImageButton) findViewById(R.id.btnRight);
         ImageButton shoot = (ImageButton) findViewById(R.id.btnShoot);
@@ -56,6 +57,14 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
 
         //Hide joystick before the game started
         hideJoystick();
+
+        btnStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(client != null)
+                    client.send(Request.STARTGAME);
+            }
+        });
 
         //Buttons initialization
         left.setOnTouchListener(new View.OnTouchListener() {
@@ -238,7 +247,14 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
      */
     private void toMainScreen(){
         client.interrupt();
+        inputThread.stopThread();
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        toMainScreen();
     }
 
     /**
@@ -246,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
      */
     @Override
     public void onMessageSendSuccess() {
-        System.out.println("Inviato senza problemi");
+        //System.out.println("Inviato senza problemi");
     }
 
     /**
@@ -258,6 +274,7 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
         switch (event){
             case CONNECTION_STOPED:
                 client.stopClient();
+                inputThread.stopThread();
                 toMainScreen();
                 break;
         }
@@ -299,15 +316,22 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
 
         //Frequency of sending data per second
         private int frequency = 10;
+        private boolean stop = false;
+
+        public void stopThread(){
+            stop = true;
+        }
 
         public void run(){
             long mill = System.currentTimeMillis();
             while(true){
                 try {
                     Thread.sleep(1000/frequency);
+                    if(stop)
+                        return;
 
-                    System.out.println("Time: " + ((System.currentTimeMillis() - mill)));
-                    mill = System.currentTimeMillis();
+                    //System.out.println("Time: " + ((System.currentTimeMillis() - mill)));
+                    //mill = System.currentTimeMillis();
 
                     String string = "c";
 
