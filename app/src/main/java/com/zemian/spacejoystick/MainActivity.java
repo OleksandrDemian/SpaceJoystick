@@ -1,5 +1,6 @@
 package com.zemian.spacejoystick;
 
+import android.os.Debug;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -26,18 +27,25 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
     private TextView shieldView;        //Shows player's shield
 
     private boolean engineB = false;    //Engine state
+    private ActivityConnectionData activityConnectionData;
 
     //Commands
-    private CommandButtonState leftCommand = new CommandButtonState(Converter.toChar(Command.TURNLEFT));
-    private CommandButtonState rightCommand = new CommandButtonState(Converter.toChar(Command.TURNRIGHT));
-    private CommandButtonState fireCommand = new CommandButtonState(Converter.toChar(Command.FIRE));
-    private CommandButtonState abilityCommand = new CommandButtonState(Converter.toChar(Command.ABILITYTRIGGER));
+    private CommandButtonState leftCommand;
+    private CommandButtonState rightCommand;
+    private CommandButtonState fireCommand;
+    private CommandButtonState abilityCommand;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        activityConnectionData = ActivityConnectionData.getInstance(false);
         initializePlayer();
+
+        leftCommand = new CommandButtonState(Converter.toChar(Command.TURNLEFT));
+        rightCommand = new CommandButtonState(Converter.toChar(Command.TURNRIGHT));
+        fireCommand = new CommandButtonState(Converter.toChar(Command.FIRE));
+        abilityCommand = new CommandButtonState(Converter.toChar(Command.ABILITYTRIGGER));
 
         //Get buttons
         Button btnStart = (Button)findViewById(R.id.btn_startGame);
@@ -56,7 +64,10 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
         setTextToTextView(shieldView, "Shield: " + String.valueOf(playerData.getAttribute("shield").getValue()));
 
         //Hide joystick before the game started
-        hideJoystick();
+        if(!activityConnectionData.gameStarted)
+            hideJoystick();
+        else
+            showJoystick();
 
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
         left.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                System.out.println("left touched!");
                 if(event.getAction() == MotionEvent.ACTION_DOWN)
                     leftCommand.press();
                 if(event.getAction() == MotionEvent.ACTION_UP)
@@ -117,12 +129,18 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
                 return false;
             }
         });
+        initializeInputThread();
+    }
 
+    private void initializeInputThread(){
         //Input thread initialization
-        if(inputThread == null) {
-            inputThread = new InputThread();
-            inputThread.start();
-        }
+        inputThread = activityConnectionData.getInputThread();
+        if(inputThread != null)
+            inputThread.stopThread();
+
+        inputThread = new InputThread();
+        inputThread.start();
+        activityConnectionData.setInputThread(inputThread);
     }
 
     /**
@@ -134,8 +152,7 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
             return;
 
         //Load player's data
-        playerData = new PlayerData(getApplicationContext());
-        playerData.loadPlayer();
+        playerData = PlayerData.getInstance(getApplicationContext());
 
         new Thread(new Runnable(){
             @Override
@@ -145,8 +162,10 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
                 client.setClientListener(MainActivity.this);
 
                 //PlayerInitialization
-                client.sendMessage("rn" + playerData.getName());
-                client.send(Request.SHIPINFO, playerData.getShipInfoArray());
+                if(!activityConnectionData.gameStarted){
+                    client.sendMessage("rn" + playerData.getName());
+                    client.send(Request.SHIPINFO, playerData.getShipInfoArray());
+                }
             }
         }).start();
     }
@@ -170,11 +189,13 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
      * Used to set visible joystick layout
      */
     private void showJoystick(){
+        activityConnectionData.gameStarted = true;
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 RelativeLayout joystick = (RelativeLayout)findViewById(R.id.joystickLayout);
                 RelativeLayout waitLayout = (RelativeLayout)findViewById(R.id.waitLayout);
+                setBackgroundColor();
                 waitLayout.setVisibility(View.INVISIBLE);
                 joystick.setVisibility(View.VISIBLE);
             }
@@ -204,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
                     break;
                 //Set background color here
                 case 'c':
-                    setBackgroundColor(Integer.parseInt("" + message.charAt(2)));
+                    activityConnectionData.backgroundColor = Integer.parseInt("" + message.charAt(2));
                     //TEMP
                     showJoystick();
                     break;
@@ -282,12 +303,13 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
 
     /**
      * Sets the background color (color depends on player)
-     * @param index
      */
-    private void setBackgroundColor(final int index){
+    private void setBackgroundColor(){
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                int index = activityConnectionData.backgroundColor;
+
                 RelativeLayout background = (RelativeLayout)findViewById(R.id.activity_main);
                 int color = getResources().getColor(R.color.background);
                 switch (index){
@@ -312,13 +334,14 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
     /**
      * Thread that sends players's input to the server
      */
-    private class InputThread extends Thread {
+    public class InputThread extends Thread {
 
         //Frequency of sending data per second
         private int frequency = 10;
         private boolean stop = false;
 
         public void stopThread(){
+            System.out.println(">>> Stop input thread");
             stop = true;
         }
 
@@ -351,7 +374,7 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
                         string += "e";
                         engineB = false;
                     }
-
+                    System.out.println("left command: " + leftCommand.mustBeSended());
                     client.sendMessage(string);
                 } catch (InterruptedException e) {
                     e.printStackTrace();

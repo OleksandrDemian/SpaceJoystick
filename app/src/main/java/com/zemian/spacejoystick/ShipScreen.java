@@ -1,5 +1,6 @@
 package com.zemian.spacejoystick;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -40,21 +41,10 @@ public class ShipScreen extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.ship_fragment, container, false);
 
-        if(playerData == null){
-            playerData = new PlayerData(getActivity().getApplicationContext());
-            playerData.loadPlayer();
-        }
+        playerData = PlayerData.getInstance(getActivity().getApplicationContext());
 
         final EditText txtName = (EditText)view.findViewById(R.id.txtName);
         txtName.setText(playerData.getName());
-
-        /*Button clear = (Button)view.findViewById(R.id.btnClear);
-        clear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                playerData.clearSavedData();
-            }
-        });*/
 
         LinearLayout layout = (LinearLayout) view.findViewById(R.id.shipAttributesLayout);
         //LayoutInflater viewInflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);

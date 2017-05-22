@@ -119,6 +119,7 @@ public class ConnectionScreen extends Fragment implements ClientListener {
             //If connected, starts joystick activity
             case CONNECTED:
                 Intent intent = new Intent(getActivity().getApplicationContext(), MainActivity.class);
+                ActivityConnectionData instance = ActivityConnectionData.getInstance(true);
                 startActivity(intent);
                 break;
             //If failed, shows error message

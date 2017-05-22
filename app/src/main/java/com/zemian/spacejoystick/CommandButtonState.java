@@ -23,6 +23,7 @@ public class CommandButtonState {
 
     public void press(){
         state = CommandState.CLICKED;
+        System.out.println("left: pressed press!");
     }
 
     public void update(){

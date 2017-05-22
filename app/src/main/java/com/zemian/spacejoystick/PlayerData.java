@@ -17,10 +17,11 @@ public class PlayerData {
     private String name;
     private int shipSkin;
     private int ability;
+    /*
     private float abilityCoolDown = 5;
     private float fireCoolDown = .5f;
-
-    private int points = 5;
+    */
+    private int points = 0;
 
     private ArrayList<Attribute> attributes = new ArrayList<>();
 
@@ -32,14 +33,28 @@ public class PlayerData {
         attributes.add(new Attribute("speed", 0, 50, 500));
     }
 
+    public static PlayerData getInstance (Context context){
+        if(instance == null){
+            System.out.println("Get new player's instance");
+            PlayerData playerData = new PlayerData(context);
+            playerData.loadPlayer();
+            instance = playerData;
+            return playerData;
+        }
+        System.out.println("Get ready player's instance");
+        return instance;
+    }
+
     public void loadPlayer(){
         SharedPreferences sharedPreferences = context.getSharedPreferences("player", Context.MODE_PRIVATE);
 
         name = sharedPreferences.getString("name", "Nameless");
         shipSkin = sharedPreferences.getInt("shipSkin", 1);
         ability = sharedPreferences.getInt("ability", 0);
+        /*
         abilityCoolDown = sharedPreferences.getFloat("abilityCoolDown", 5);
         fireCoolDown = sharedPreferences.getFloat("fireCoolDown", .5f);
+        */
         points = sharedPreferences.getInt("points", 5);
 
         for(int i = 0; i < attributes.size(); i++){
@@ -53,9 +68,10 @@ public class PlayerData {
         editor.putString("name", name);
         editor.putInt("shipSkin", shipSkin);
         editor.putInt("ability", ability);
+        /*
         editor.putFloat("abilityCoolDown", abilityCoolDown);
         editor.putFloat("fireCoolDown", fireCoolDown);
-
+        */
         editor.putInt("points", points);
 
         for(int i = 0; i < attributes.size(); i++){
@@ -124,13 +140,13 @@ public class PlayerData {
     }
 
     //--------------------------------GETTERS--------------------------------//
-    public float getAbilityCoolDown(){
+    /*public float getAbilityCoolDown(){
         return abilityCoolDown;
-    }
+    }*/
 
-    public float getFireCoolDown(){
+    /*public float getFireCoolDown(){
         return fireCoolDown;
-    }
+    }*/
 
     public String getName(){
         return name;
@@ -157,6 +173,7 @@ public class PlayerData {
         this.ability = ability;
     }
 
+    /*
     public void setAbilityCoolDown(float abilityCoolDown) {
         this.abilityCoolDown = abilityCoolDown;
     }
@@ -164,4 +181,5 @@ public class PlayerData {
     public void setFireCoolDown(float fireCoolDown) {
         this.fireCoolDown = fireCoolDown;
     }
+    */
 }
