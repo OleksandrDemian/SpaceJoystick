@@ -17,21 +17,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/waitLayout"
-        android:visibility="visible"
+        android:visibility="invisible"
         android:layout_margin="0dp"
         android:background="@drawable/splash">
 
         <Button
-            android:text="Start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/btn_startGame"
             android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
             android:elevation="10dp"
-            android:background="@color/bgBlue"
-            android:layout_margin="20dp"
-            android:textColor="@color/colorAccent" />
+            android:background="@drawable/linelight40"
+            android:layout_margin="20dp" />
 
         <TextView
             android:text="Wait for start"
@@ -51,7 +49,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/joystickLayout"
-        android:visibility="invisible"
+        android:visibility="visible"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_margin="16dp">
@@ -60,7 +58,7 @@
             android:layout_width="90sp"
             android:layout_height="90sp"
             android:id="@+id/btnLeft"
-            android:background="@drawable/flatdark23"
+            android:background="@drawable/linelight22"
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
             android:elevation="10dp" />
@@ -69,7 +67,7 @@
             android:layout_width="90sp"
             android:layout_height="90sp"
             android:id="@+id/btnRight"
-            android:background="@drawable/flatdark24"
+            android:background="@drawable/linelight23"
             android:layout_marginStart="26dp"
             android:layout_alignParentBottom="true"
             android:layout_toEndOf="@+id/btnLeft"
@@ -79,7 +77,7 @@
             android:layout_width="90sp"
             android:layout_height="90sp"
             android:id="@+id/btnShoot"
-            android:background="@drawable/flatdark48"
+            android:background="@drawable/linelight47"
             android:elevation="10dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true" />
@@ -88,7 +86,7 @@
             android:layout_width="90sp"
             android:layout_height="90sp"
             android:id="@+id/btnEngine"
-            android:background="@drawable/flatdark49"
+            android:background="@drawable/linelight48"
             android:elevation="10dp"
             android:layout_above="@+id/btnShoot"
             android:layout_alignParentEnd="true"
@@ -98,7 +96,7 @@
             android:layout_width="90sp"
             android:layout_height="90sp"
             android:id="@+id/btnAbility"
-            android:background="@drawable/flatdark35"
+            android:background="@drawable/linelight34"
             android:elevation="10dp"
             android:layout_marginEnd="12dp"
             android:layout_marginTop="53dp"
@@ -126,6 +124,15 @@
             android:padding="10sp"
             android:layout_below="@+id/joystickHealth"
             android:layout_alignParentStart="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button"
+            android:background="@drawable/linelight42"
+            android:layout_alignBaseline="@+id/joystickHealth"
+            android:layout_alignBottom="@+id/joystickHealth"
+            android:layout_alignParentEnd="true" />
 
     </RelativeLayout>
 
