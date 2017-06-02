@@ -104,6 +104,54 @@
             android:layout_toStartOf="@+id/btnShoot" />
 
         <TextView
+            android:text="Shield: 15"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/joystickShield"
+            android:textColor="@color/colorAccent"
+            android:textSize="20sp"
+            android:padding="10sp"
+            android:layout_below="@+id/joystickHealth"
+            android:layout_alignParentStart="true"
+            android:textStyle="normal|bold"
+            android:textAllCaps="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_pause"
+            android:background="@drawable/linelight42"
+            android:layout_alignBaseline="@+id/joystickHealth"
+            android:layout_alignBottom="@+id/joystickHealth"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            android:text="Kills: 0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/joystickKills"
+            android:textColor="@color/colorAccent"
+            android:textSize="20sp"
+            android:padding="10sp"
+            android:textStyle="normal|bold"
+            android:textAllCaps="true"
+            android:layout_below="@+id/joystickShield"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:text="Death: 0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/joystickDeath"
+            android:textColor="@color/colorAccent"
+            android:textSize="20sp"
+            android:padding="10sp"
+            android:textStyle="normal|bold"
+            android:textAllCaps="true"
+            android:layout_below="@+id/joystickKills"
+            android:layout_alignParentStart="true" />
+
+        <TextView
             android:text="Health: 15"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -111,28 +159,10 @@
             android:textColor="@color/colorAccent"
             android:textSize="20sp"
             android:padding="10sp"
+            android:textStyle="normal|bold"
+            android:textAllCaps="true"
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true" />
-
-        <TextView
-            android:text="Shield: 15"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/joystickShields"
-            android:textColor="@color/colorAccent"
-            android:textSize="20sp"
-            android:padding="10sp"
-            android:layout_below="@+id/joystickHealth"
-            android:layout_alignParentStart="true" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button"
-            android:background="@drawable/linelight42"
-            android:layout_alignBaseline="@+id/joystickHealth"
-            android:layout_alignBottom="@+id/joystickHealth"
-            android:layout_alignParentEnd="true" />
 
     </RelativeLayout>
 

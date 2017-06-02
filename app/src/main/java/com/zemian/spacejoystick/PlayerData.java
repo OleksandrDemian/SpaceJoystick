@@ -27,10 +27,10 @@ public class PlayerData {
 
     public PlayerData(Context context){
         this.context = context;
-        attributes.add(new Attribute("health", 0, 10, 20));
-        attributes.add(new Attribute("damage", 0, 3, 10));
-        attributes.add(new Attribute("shield", 0, 1, 2));
-        attributes.add(new Attribute("speed", 0, 50, 500));
+        attributes.add(new Attribute("Health", 0, 10, 20));
+        attributes.add(new Attribute("Damage", 0, 3, 10));
+        attributes.add(new Attribute("Shield", 0, 1, 2));
+        attributes.add(new Attribute("Speed", 0, 50, 500));
     }
 
     public static PlayerData getInstance (Context context){
@@ -58,7 +58,8 @@ public class PlayerData {
         points = sharedPreferences.getInt("points", 5);
 
         for(int i = 0; i < attributes.size(); i++){
-            attributes.get(i).setLevel(sharedPreferences.getInt(attributes.get(i).getName(), 0));
+            int value = sharedPreferences.getInt(attributes.get(i).getName(), 0);
+            attributes.get(i).setLevel(value);
         }
     }
 
@@ -77,6 +78,18 @@ public class PlayerData {
         for(int i = 0; i < attributes.size(); i++){
             Attribute attr = attributes.get(i);
             editor.putInt(attr.getName(), attr.getLevel());
+
+            /*
+            String encName = Utils.encrypt(attr.getName());
+            String encVal = Utils.encrypt("" + attr.getLevel());
+
+            System.out.println("Encrypted: " + encName + ": " + encVal);
+
+            String name = Utils.decrypt(encName);
+            String val = Utils.decrypt(encVal);
+
+            System.out.println("Decrypted: " + name + ": " + val);
+            */
         }
 
         editor.commit();
@@ -96,10 +109,10 @@ public class PlayerData {
     public String[] getShipInfoArray(){
         //Dati order: health, damage, shield, speed, shipSkin, abilityType, abilityLevel
         String[] dati = {
-                String.valueOf(getAttribute("health").getValue()),
-                String.valueOf(getAttribute("damage").getValue()),
-                String.valueOf(getAttribute("shield").getValue()),
-                String.valueOf(getAttribute("speed").getValue()),
+                String.valueOf(getAttribute("Health").getValue()),
+                String.valueOf(getAttribute("Damage").getValue()),
+                String.valueOf(getAttribute("Shield").getValue()),
+                String.valueOf(getAttribute("Speed").getValue()),
                 String.valueOf(shipSkin),
                 String.valueOf(ability),
                 "1"
@@ -133,6 +146,13 @@ public class PlayerData {
     //NOT TESTED
     public void incresePoints(){
         points ++;
+    }
+
+    public void incresePoints(boolean mustSave){
+        points ++;
+        if(!mustSave)
+            return;
+
         SharedPreferences.Editor editor = getEditor();
         editor.putInt("points", points);
         System.out.println("Points: " + points);

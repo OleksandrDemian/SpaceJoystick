@@ -5,9 +5,23 @@ package com.zemian.spacejoystick;
  */
 
 public enum Command {
+    NONE,
     TURNLEFT,
     TURNRIGHT,
     ENGINETRIGGER,
     FIRE,
-    ABILITYTRIGGER
+    ABILITYTRIGGER,
+    ABILITYINFO,
+    NAME,
+    SHIPINFO,
+    STARTGAME,
+    PAUSE,
+    KILL,
+    DEATH,
+    ADDPOINT,
+    MATCHEND,
+    COLOR,
+    SHIELD,
+    HEALTH,
+    COMMANDSSTRING
 }

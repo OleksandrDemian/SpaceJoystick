@@ -116,7 +116,7 @@ public class Client extends Thread {
      * @param command
      */
     public void send(Command command){
-        sendMessage(Converter.toString(command));
+        sendMessage(String.valueOf(Converter.toChar(command)));
     }
 
     /**
@@ -125,7 +125,8 @@ public class Client extends Thread {
      * @param dati
      */
     public void send(Command command, String[] dati){
-        String message = Converter.toString(command);
+        String message = String.valueOf(Converter.toChar(command));
+
         for(int i = 0; i < dati.length; i++){
             message += ":" + dati[i];
         }
@@ -136,22 +137,22 @@ public class Client extends Thread {
      * Sends the request to server
      * @param request
      */
-    public void send(Request request){
+    /*public void send(Request request){
         sendMessage(Converter.toString(request));
-    }
+    }*/
 
     /**
      * Sends the request with data to server
      * @param request
      * @param dati
      */
-    public void send(Request request, String[] dati){
+    /*public void send(Request request, String[] dati){
         String message = Converter.toString(request);
         for(int i = 0; i < dati.length; i++){
             message += ":" + dati[i];
         }
         sendMessage(message);
-    }
+    }*/
 
     /**
      * Stops listening
