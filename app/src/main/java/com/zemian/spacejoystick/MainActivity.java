@@ -178,6 +178,7 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
 
                 //PlayerInitialization
                 if (!activityConnectionData.gameStarted) {
+                    client.sendMessage("m");
                     client.sendMessage(Converter.toChar(Command.NAME) + playerData.getName());
                     client.send(Command.SHIPINFO, playerData.getShipInfoArray());
                 }
@@ -285,8 +286,6 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
      * Close the connection and open the main screen
      */
     private void toMainScreen() {
-        client.interrupt();
-        inputThread.stopThread();
         finish();
     }
 
@@ -314,7 +313,8 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
         switch (event) {
             case CONNECTION_STOPED:
                 client.stopClient();
-                inputThread.stopThread();
+                if(inputThread != null)
+                    inputThread.stopThread();
                 toMainScreen();
                 break;
         }

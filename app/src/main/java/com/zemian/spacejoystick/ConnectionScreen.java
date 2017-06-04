@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.oleksandr.spacejoystick.R;
@@ -22,6 +24,7 @@ public class ConnectionScreen extends Fragment implements ClientListener {
 
     private View view;      //Fragment's view
     private Client client;  //Connection
+    private ServersSeracher serversSeracher;
 
     /**
      * Empty constructor required for fragments
@@ -40,20 +43,83 @@ public class ConnectionScreen extends Fragment implements ClientListener {
     public void onStart() {
         super.onStart();
 
+        checkServers(true);
+        client = new Client();
+
         final EditText ipText = (EditText)view.findViewById(R.id.ip);   //Text where you type the game ip
         ipText.setText(getLastIP());                                    //Set the last inserted ip
-
-        client = new Client();                                          //Initialize client
 
         Button connect = (Button)view.findViewById(R.id.btnConnect);    //Start connection to the server when pressed
         connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String ip = ipText.getText().toString();                //Get the ip
-                saveIP(ip);                                             //Save the ip as last ip
                 startClient(ip, Client.PORT);                           //Connection to the server
             }
         });
+    }
+
+    private void checkServers(boolean todo) {
+        final TextView ipListStae = (TextView)view.findViewById(R.id.ipListState);
+        if(!todo){
+            ipListStae.setText("Searching disabled");
+            return;
+        }
+
+        final LinearLayout ipList = (LinearLayout)view.findViewById(R.id.ips);
+
+        serversSeracher = ServersSeracher.getInstance();
+
+        if(serversSeracher != null)
+            serversSeracher.stopSearching();
+
+        int views = ipList.getChildCount();
+        if(views > 1) {
+            for (int i = views - 1; i > 0; i--) {
+                ipList.removeViewAt(i);
+            }
+        }
+        String ip = Client.getLocalIP(getContext());
+
+        if(ip == null) {
+            Toast.makeText(getContext(), "Can't search servers", Toast.LENGTH_LONG);
+            ipListStae.setText("Can't search servers");
+            return;
+        }
+
+        ipListStae.setText("Searching for servers...");
+        serversSeracher = new ServersSeracher (ip, new IOnServerDetected() {
+            @Override
+            public void onServerDetected(final String ip, final String name) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if(ip == null){
+                            if(ipList.getChildCount() < 2)
+                                ipListStae.setText("There is no available servers");
+                            else
+                                ipListStae.setText("Available servers: ");
+                        }
+
+                        View ipView = getActivity().getLayoutInflater().inflate(R.layout.ip_layout, null);
+                        TextView txt = (TextView) ipView.findViewById(R.id.ip_txt);
+                        txt.setText(name + ": " + ip);
+                        txt.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                startClient(ip, Client.PORT);
+                            }
+                        });
+                        ipList.addView(ipView);
+                    }
+                });
+            }
+        }, true);
+        serversSeracher.addServersChecker(0, 100);
+        serversSeracher.addServersChecker(100, 200);
+        serversSeracher.addServersChecker(200, 255);
+        serversSeracher.startChecking();
     }
 
     /**
@@ -62,6 +128,15 @@ public class ConnectionScreen extends Fragment implements ClientListener {
      * @param port -> server port
      */
     private void startClient(final String ip, final int port){
+        saveIP(ip);                                             //Save the ip as last ip
+
+        if(client != null){
+            if(client.isStarted())
+                client = new Client();
+            /*else if(client.isRunning())
+                return;*/
+        }
+
         Thread connect = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -120,6 +195,9 @@ public class ConnectionScreen extends Fragment implements ClientListener {
             case CONNECTED:
                 Intent intent = new Intent(getActivity().getApplicationContext(), MainActivity.class);
                 ActivityConnectionData instance = ActivityConnectionData.getInstance(true);
+                if(serversSeracher != null)
+                    serversSeracher.stopSearching();
+
                 startActivity(intent);
                 break;
             //If failed, shows error message

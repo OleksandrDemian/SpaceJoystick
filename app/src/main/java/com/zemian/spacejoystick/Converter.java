@@ -46,6 +46,8 @@ public class Converter {
                 return 'k';
             case COMMANDSSTRING:
                 return 'l';
+            case SERVERCHECKER:
+                return 'z';
         }
         return ' ';
     }
@@ -90,6 +92,8 @@ public class Converter {
                 return Command.HEALTH;
             case 'l':
                 return Command.COMMANDSSTRING;
+            case 'z':
+                return Command.SERVERCHECKER;
             default:
                 return Command.NONE;
         }

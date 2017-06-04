@@ -23,5 +23,6 @@ public enum Command {
     COLOR,
     SHIELD,
     HEALTH,
-    COMMANDSSTRING
+    COMMANDSSTRING,
+    SERVERCHECKER
 }
