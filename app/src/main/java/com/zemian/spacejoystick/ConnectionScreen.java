@@ -23,6 +23,7 @@ import com.example.oleksandr.spacejoystick.R;
 public class ConnectionScreen extends Fragment implements ClientListener {
 
     private View view;      //Fragment's view
+    private Button connect;
     private Client client;  //Connection
     private ServersSeracher serversSeracher;
 
@@ -43,13 +44,13 @@ public class ConnectionScreen extends Fragment implements ClientListener {
     public void onStart() {
         super.onStart();
 
-        checkServers(true);
+        //checkServers(true);
         client = new Client();
 
         final EditText ipText = (EditText)view.findViewById(R.id.ip);   //Text where you type the game ip
         ipText.setText(getLastIP());                                    //Set the last inserted ip
 
-        Button connect = (Button)view.findViewById(R.id.btnConnect);    //Start connection to the server when pressed
+        connect = (Button)view.findViewById(R.id.btnConnect);    //Start connection to the server when pressed
         connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,10 +59,10 @@ public class ConnectionScreen extends Fragment implements ClientListener {
             }
         });
     }
-
-    private void checkServers(boolean todo) {
+    /*
+    private void checkServers(boolean enabled) {
         final TextView ipListStae = (TextView)view.findViewById(R.id.ipListState);
-        if(!todo){
+        if(!enabled){
             ipListStae.setText("Searching disabled");
             return;
         }
@@ -121,6 +122,7 @@ public class ConnectionScreen extends Fragment implements ClientListener {
         serversSeracher.addServersChecker(200, 255);
         serversSeracher.startChecking();
     }
+    */
 
     /**
      * Starts connection thread
@@ -130,14 +132,17 @@ public class ConnectionScreen extends Fragment implements ClientListener {
     private void startClient(final String ip, final int port){
         saveIP(ip);                                             //Save the ip as last ip
 
-        if(client != null){
-            if(client.isStarted())
-                client = new Client();
-            /*else if(client.isRunning())
-                return;*/
-        }
+        if(client == null)
+            client = Client.getInstance();
 
-        Thread connect = new Thread(new Runnable() {
+        if(client.getClientState() == ClientState.CONNECTING)
+            return;
+
+        ClientState state = client.getClientState();
+        if(state  == ClientState.ISRUNNING || state == ClientState.TERMINATED)
+            client = new Client();
+
+        Thread startClientThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 client.setClientListener(ConnectionScreen.this);
@@ -145,7 +150,8 @@ public class ConnectionScreen extends Fragment implements ClientListener {
             }
         });
         Toast.makeText(getContext(), "Connecting to: " + ip, Toast.LENGTH_SHORT).show();
-        connect.start();
+        connect.setEnabled(false);
+        startClientThread.start();
     }
 
     /**
@@ -189,15 +195,22 @@ public class ConnectionScreen extends Fragment implements ClientListener {
      */
     @Override
     public void onConnectionEvent(ConnectionEvent event) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                connect.setEnabled(true);
+            }
+        });
         System.out.println("(Connection screen)Event: " + event.toString());
         switch (event){
             //If connected, starts joystick activity
             case CONNECTED:
                 Intent intent = new Intent(getActivity().getApplicationContext(), MainActivity.class);
                 ActivityConnectionData instance = ActivityConnectionData.getInstance(true);
+                /*
                 if(serversSeracher != null)
                     serversSeracher.stopSearching();
-
+                */
                 startActivity(intent);
                 break;
             //If failed, shows error message
@@ -205,7 +218,7 @@ public class ConnectionScreen extends Fragment implements ClientListener {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getContext(), "Failed to connect", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), "Failed to connect", Toast.LENGTH_SHORT).show();
                     }
                 });
                 break;

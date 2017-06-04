@@ -24,8 +24,7 @@ public class Client extends Thread {
     private PrintWriter writer;             //Used to write data to server
     private BufferedReader reader;          //Read's data from server
     private ClientListener clientListener;  //Listener
-    private boolean isRunning = false;      //Is client running
-    private boolean started = false;
+    private ClientState state;              //Current state
 
     /**
      * Default constructor
@@ -35,6 +34,7 @@ public class Client extends Thread {
             instance.stopClient();
 
         instance = this;
+        state = ClientState.NOTINIZIALIZED;
     }
 
     /**
@@ -46,24 +46,25 @@ public class Client extends Thread {
     public void connect(String ip, int port) {
         try {
             //Initialize socket
-            isRunning = true;
+            state = ClientState.CONNECTING;
             socket = new Socket();
-            socket.connect(new InetSocketAddress(ip, port), 3000);
+            socket.connect(new InetSocketAddress(ip, port), 1200);
             //Initialize writer
             writer = new PrintWriter(socket.getOutputStream());
-            if(writer == null)
-                System.out.println("Whhaaaaaaaat!!!!");
             //Initialize reader
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
             instance = this;
             start();
+
             //Notifies listener about success
-            if (clientListener != null) clientListener.onConnectionEvent(ConnectionEvent.CONNECTED);
+            if (clientListener != null)
+                clientListener.onConnectionEvent(ConnectionEvent.CONNECTED);
         } catch (IOException e) {
             //Notifies listener about failure
             if (clientListener != null)
                 clientListener.onConnectionEvent(ConnectionEvent.CONNECTION_FAILED);
+            state = ClientState.CONNECTIONFAILED;
             e.printStackTrace();
         }
     }
@@ -75,6 +76,7 @@ public class Client extends Thread {
         //PAY ATTENTION!!!
         if (instance == null)
             return new Client();
+
         return instance;
     }
 
@@ -85,7 +87,7 @@ public class Client extends Thread {
 
     //Listens for messages from server
     public void run() {
-        started = true;
+        state = ClientState.ISRUNNING;
 
         while (true) {
             try {
@@ -147,6 +149,10 @@ public class Client extends Thread {
         sendMessage(message);
     }
 
+    public ClientState getClientState(){
+        return state;
+    }
+
     /**
      * Sends the request to server
      * @param request
@@ -172,26 +178,20 @@ public class Client extends Thread {
      * Stops listening
      */
     public void stopClient() {
-        if (!isRunning)
+        if (!(state == ClientState.ISRUNNING))
             return;
 
         try {
-            isRunning = false;
+            state = ClientState.TERMINATED;
             interrupt();
+
             socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public boolean isRunning(){
-        return isRunning;
-    }
-
-    public boolean isStarted(){
-        return started;
-    }
-
+    /*
     public static String getLocalIP(Context context){
         try {
             WifiManager wifiMgr = (WifiManager) context.getSystemService(WIFI_SERVICE);
@@ -202,6 +202,6 @@ public class Client extends Thread {
         } catch (Exception e){
             return null;
         }
-
     }
+    */
 }

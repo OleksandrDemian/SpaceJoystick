@@ -153,6 +153,9 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
         if (inputThread != null)
             inputThread.stopThread();
 
+        if(client == null || !(client.getClientState() == ClientState.ISRUNNING))
+            return;;
+
         inputThread = new InputThread();
         inputThread.start();
         activityConnectionData.setInputThread(inputThread);
@@ -286,6 +289,9 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
      * Close the connection and open the main screen
      */
     private void toMainScreen() {
+        if(inputThread != null)
+            inputThread.stopThread();
+
         finish();
     }
 

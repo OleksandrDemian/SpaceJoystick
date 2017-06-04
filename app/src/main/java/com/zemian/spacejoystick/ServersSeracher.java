@@ -1,7 +1,5 @@
 package com.zemian.spacejoystick;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -64,6 +62,7 @@ public class ServersSeracher {
         }
 
         public void run(){
+            /*
             try {
                 String prefix = ip.substring(0, ip.lastIndexOf(".") + 1);
 
@@ -96,6 +95,7 @@ public class ServersSeracher {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            */
         }
     }
 }
