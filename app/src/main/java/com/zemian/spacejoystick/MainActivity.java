@@ -1,6 +1,5 @@
 package com.zemian.spacejoystick;
 
-import android.os.Debug;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -65,8 +64,19 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
         deathView = (TextView) findViewById(R.id.joystickDeath);
 
         //Set player's health and shield
-        setTextToTextView(healthView, "Health: " + String.valueOf(playerData.getAttribute("Health").getValue()));
-        setTextToTextView(shieldView, "Shield: " + String.valueOf(playerData.getAttribute("Shield").getValue()));
+        int health;
+        int shield;
+
+        if(!activityConnectionData.gameStarted) {
+            health = playerData.getAttribute("Health").getValue();
+            shield = playerData.getAttribute("Shield").getValue();
+        } else {
+            health = activityConnectionData.health;
+            shield = activityConnectionData.shields;
+        }
+
+        setTextToTextView(healthView, "Health: " + String.valueOf(health));
+        setTextToTextView(shieldView, "Shield: " + String.valueOf(shield));
 
         //Hide joystick before the game started
         if (!activityConnectionData.gameStarted)
@@ -153,9 +163,6 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
         if (inputThread != null)
             inputThread.stopThread();
 
-        if(client == null || !(client.getClientState() == ClientState.ISRUNNING))
-            return;;
-
         inputThread = new InputThread();
         inputThread.start();
         activityConnectionData.setInputThread(inputThread);
@@ -180,10 +187,11 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
                 client.setClientListener(MainActivity.this);
 
                 //PlayerInitialization
-                if (!activityConnectionData.gameStarted) {
+                if (!activityConnectionData.shipInfoSent) {
                     client.sendMessage("m");
                     client.sendMessage(Converter.toChar(Command.NAME) + playerData.getName());
                     client.send(Command.SHIPINFO, playerData.getShipInfoArray());
+                    activityConnectionData.shipInfoSent = true;
                 }
             }
         }).start();
@@ -250,10 +258,12 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
                 toMainScreen();
                 break;
             case SHIELD:
-                setTextToTextView(shieldView, "Shield: " + message.substring(1));
+                activityConnectionData.shields = Utils.toNum(message.substring(1));
+                setTextToTextView(shieldView, "Shield: " + activityConnectionData.shields);
                 break;
             case HEALTH:
-                setTextToTextView(healthView, "Health: " + message.substring(1));
+                activityConnectionData.health = Utils.toNum(message.substring(1));
+                setTextToTextView(healthView, "Health: " + activityConnectionData.health);
                 break;
             case KILL:
                 activityConnectionData.kills ++;
@@ -268,6 +278,11 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
                 playerData.incresePoints(true);
                 break;
         }
+    }
+
+    @Override
+    public void onClientStateChange(ClientState state) {
+
     }
 
     /**
@@ -297,7 +312,7 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        //super.onBackPressed();
         toMainScreen();
     }
 
@@ -319,8 +334,6 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
         switch (event) {
             case CONNECTION_STOPED:
                 client.stopClient();
-                if(inputThread != null)
-                    inputThread.stopThread();
                 toMainScreen();
                 break;
         }

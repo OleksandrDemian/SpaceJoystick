@@ -10,8 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.oleksandr.spacejoystick.R;
@@ -187,6 +185,11 @@ public class ConnectionScreen extends Fragment implements ClientListener {
     @Override
     public void onMessageSendSuccess() {
         return;
+    }
+
+    @Override
+    public void onClientStateChange(ClientState state) {
+
     }
 
     /**

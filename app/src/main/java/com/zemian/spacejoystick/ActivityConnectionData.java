@@ -10,9 +10,12 @@ public class ActivityConnectionData {
 
     public MainActivity.InputThread inputThread = null;
     public boolean gameStarted = false;
+    public boolean shipInfoSent = false;
     public int backgroundColor = -1;
     public int kills = 0;
     public int death = 0;
+    public int health = 0;
+    public int shields = 0;
 
     public ActivityConnectionData (){
         instance = this;

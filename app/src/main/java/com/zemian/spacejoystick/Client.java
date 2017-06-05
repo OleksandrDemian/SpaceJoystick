@@ -1,20 +1,11 @@
 package com.zemian.spacejoystick;
 
-import android.content.Context;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
-import android.text.format.Formatter;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
-
-import static android.content.Context.WIFI_SERVICE;
 
 public class Client extends Thread {
 
@@ -34,7 +25,7 @@ public class Client extends Thread {
             instance.stopClient();
 
         instance = this;
-        state = ClientState.NOTINIZIALIZED;
+        setClientState(ClientState.NOTINIZIALIZED);
     }
 
     /**
@@ -46,7 +37,7 @@ public class Client extends Thread {
     public void connect(String ip, int port) {
         try {
             //Initialize socket
-            state = ClientState.CONNECTING;
+            setClientState(ClientState.CONNECTING);
             socket = new Socket();
             socket.connect(new InetSocketAddress(ip, port), 1200);
             //Initialize writer
@@ -64,7 +55,7 @@ public class Client extends Thread {
             //Notifies listener about failure
             if (clientListener != null)
                 clientListener.onConnectionEvent(ConnectionEvent.CONNECTION_FAILED);
-            state = ClientState.CONNECTIONFAILED;
+            setClientState(ClientState.CONNECTIONFAILED);
             e.printStackTrace();
         }
     }
@@ -87,7 +78,7 @@ public class Client extends Thread {
 
     //Listens for messages from server
     public void run() {
-        state = ClientState.ISRUNNING;
+        setClientState(ClientState.ISRUNNING);
 
         while (true) {
             try {
@@ -100,6 +91,8 @@ public class Client extends Thread {
             } catch (Exception e) {
                 System.out.println("ErrorSocket: " + e.getMessage());
                 System.out.println("ErrorSocket: " + e.getStackTrace());
+
+                stopClient();
 
                 if (clientListener != null)
                     clientListener.onConnectionEvent(ConnectionEvent.CONNECTION_STOPED);
@@ -154,41 +147,26 @@ public class Client extends Thread {
     }
 
     /**
-     * Sends the request to server
-     * @param request
-     */
-    /*public void send(Request request){
-        sendMessage(Converter.toString(request));
-    }*/
-
-    /**
-     * Sends the request with data to server
-     * @param request
-     * @param dati
-     */
-    /*public void send(Request request, String[] dati){
-        String message = Converter.toString(request);
-        for(int i = 0; i < dati.length; i++){
-            message += ":" + dati[i];
-        }
-        sendMessage(message);
-    }*/
-
-    /**
      * Stops listening
      */
     public void stopClient() {
-        if (!(state == ClientState.ISRUNNING))
+        if (state != ClientState.ISRUNNING)
             return;
 
         try {
-            state = ClientState.TERMINATED;
+            setClientState(ClientState.TERMINATED);
             interrupt();
 
             socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void setClientState(ClientState newState){
+        this.state = newState;
+        if(clientListener != null)
+            clientListener.onClientStateChange(state);
     }
 
     /*
