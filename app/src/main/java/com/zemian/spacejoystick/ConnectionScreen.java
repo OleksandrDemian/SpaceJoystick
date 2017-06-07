@@ -3,6 +3,7 @@ package com.zemian.spacejoystick;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,20 +11,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.oleksandr.spacejoystick.R;
+import com.zemian.spacejoystick.News.INewsContainerListener;
+import com.zemian.spacejoystick.News.NewsContainer;
 
 /**
  * Created by Oleksandr on 14/02/2017.
  */
 
-public class ConnectionScreen extends Fragment implements ClientListener {
+public class ConnectionScreen extends Fragment implements ClientListener, INewsContainerListener {
 
     private View view;      //Fragment's view
     private Button connect;
     private Client client;  //Connection
-    private ServersSeracher serversSeracher;
+    //private ServersSeracher serversSeracher;
+    private NewsContainer newsContainer;
 
     /**
      * Empty constructor required for fragments
@@ -35,6 +41,7 @@ public class ConnectionScreen extends Fragment implements ClientListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
+        showNews();
         return view;
     }
 
@@ -56,6 +63,17 @@ public class ConnectionScreen extends Fragment implements ClientListener {
                 startClient(ip, Client.PORT);                           //Connection to the server
             }
         });
+    }
+
+    private void showNews(){
+        NewsContainer news = NewsContainer.getInstance();
+        if(news.newsDownloaded()) {
+            onNewsLoaded(news, true);
+            return;
+        }
+
+        news.setListener(this);
+        news.loadNews();
     }
     /*
     private void checkServers(boolean enabled) {
@@ -226,5 +244,26 @@ public class ConnectionScreen extends Fragment implements ClientListener {
                 });
                 break;
         }
+    }
+
+    @Override
+    public void onNewsLoaded(final NewsContainer container, final boolean success) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                LinearLayout newsLayout = (LinearLayout) view.findViewById(R.id.connection_screen_news);
+                if(!success){
+                    TextView txt = new TextView(getActivity());
+                    txt.setTextColor(Color.WHITE);
+                    txt.setText("Error during loading news");
+                    newsLayout.addView(txt);
+                    return;
+                }
+                int count = container.getCount();
+                for(int i = 0; i < count; i++){
+                    newsLayout.addView(container.getNews(i).getNews(getActivity().getLayoutInflater()));
+                }
+            }
+        });
     }
 }

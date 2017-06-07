@@ -4,10 +4,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.oleksandr.spacejoystick.R;
 
@@ -39,6 +41,13 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        try {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        } catch (Exception e){
+            Toast.makeText(getApplicationContext(), "Cannot hide status bar!", Toast.LENGTH_LONG).show();
+        }
+
         setContentView(R.layout.activity_main);
         activityConnectionData = ActivityConnectionData.getInstance(false);
         initializePlayer();

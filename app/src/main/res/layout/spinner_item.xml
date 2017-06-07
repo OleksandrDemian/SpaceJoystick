@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:textColor="@color/colorAccent"
     android:textSize="20sp"
-    android:background="@color/background"
+    android:background="@color/internalElements"
     android:text="ciao"
     android:padding="10sp">
 

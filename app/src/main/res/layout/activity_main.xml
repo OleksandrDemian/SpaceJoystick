@@ -16,40 +16,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/waitLayout"
-        android:visibility="invisible"
-        android:layout_margin="0dp"
-        android:background="@drawable/splash">
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/btn_startGame"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            android:elevation="10dp"
-            android:background="@drawable/linelight40"
-            android:layout_margin="20dp" />
-
-        <TextView
-            android:text="Wait for start"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView"
-            android:textAlignment="center"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"
-            android:textSize="25sp"
-            android:textColor="@color/colorAccent"
-            android:gravity="center_vertical"
-            android:layout_above="@+id/btn_startGame" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:id="@+id/joystickLayout"
-        android:visibility="visible"
+        android:visibility="invisible"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_margin="16dp">
@@ -164,6 +132,39 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true" />
 
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/waitLayout"
+        android:visibility="invisible"
+        android:layout_margin="0dp"
+        android:background="@drawable/android_waitscreen">
+
+        <TextView
+            android:text="Waiting other players"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView"
+            android:textAlignment="center"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:textSize="25sp"
+            android:textColor="@color/colorAccent"
+            android:gravity="center_vertical"
+            android:layout_above="@+id/btn_startGame" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_startGame"
+            android:elevation="10dp"
+            android:background="@drawable/linelight40"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
     </RelativeLayout>
 
 </RelativeLayout>
