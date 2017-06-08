@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#37474f</color>
+    <!-- General colors -->
     <color name="colorPrimaryDark">#263238</color>
-    <color name="colorAccent">#ffffff</color>
+    <color name="colorPrimary">#37474f</color>
     <color name="background">#455a64</color>
     <color name="internalElements">#546e7a</color>
+
+    <!-- Text color -->
+    <color name="colorAccent">#ffffff</color>
     <color name="inputHint">#b0bec5</color>
+
+    <!-- Joystick background -->
     <color name="bgBlue">#0091ea</color>
     <color name="bgRed">#f44336</color>
     <color name="bgGreen">#66bb6a</color>

@@ -25,6 +25,7 @@ import com.example.oleksandr.spacejoystick.R;
 public class ShipScreen extends Fragment {
 
     private View view;
+    private EditText txtName;
     private TextView pointsText;
     private PlayerData playerData;
 
@@ -43,7 +44,7 @@ public class ShipScreen extends Fragment {
 
         playerData = PlayerData.getInstance(getActivity().getApplicationContext());
 
-        final EditText txtName = (EditText)view.findViewById(R.id.txtName);
+        txtName = (EditText)view.findViewById(R.id.txtName);
         txtName.setText(playerData.getName());
 
         LinearLayout layout = (LinearLayout) view.findViewById(R.id.shipAttributesLayout);
@@ -68,13 +69,6 @@ public class ShipScreen extends Fragment {
             public void onClick(View v) {
                 //Set players data here
                 playerData.setName(txtName.getText().toString());
-                /*int skin = Utils.toNum(shipSkinID.getText().toString());
-                int ability = abilities.getSelectedItemPosition();*/
-                //int ability = Utils.toNum(abilityID.getText().toString());
-                /*playerData.setShipSkin(skin != -1 ? skin : 0);
-                playerData.setAbility(ability == -1 ? 0 : ability);*/
-
-                //save player
                 playerData.savePlayer();
                 Toast.makeText(getContext(), "Saved", Toast.LENGTH_SHORT).show();
             }

@@ -9,6 +9,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.AnimationSet;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -26,6 +29,7 @@ import com.zemian.spacejoystick.News.NewsContainer;
 public class ConnectionScreen extends Fragment implements ClientListener, INewsContainerListener {
 
     private View view;      //Fragment's view
+    private EditText ipText;
     private Button connect;
     private Client client;  //Connection
     //private ServersSeracher serversSeracher;
@@ -41,6 +45,21 @@ public class ConnectionScreen extends Fragment implements ClientListener, INewsC
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
+
+        ipText = (EditText)view.findViewById(R.id.ip_text);   //Text where you type the game ip
+        ipText.setText(getLastIP());                          //Set the last inserted ip
+        ipText.startAnimation(getFadeInAnimation(0));
+
+        connect = (Button)view.findViewById(R.id.btnConnect);    //Start connection to the server when pressed
+        connect.startAnimation(getFadeInAnimation(50));
+        connect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String ip = ipText.getText().toString();                //Get the ip
+                startClient(ip, Client.PORT);                           //Connection to the server
+            }
+        });
+
         showNews();
         return view;
     }
@@ -51,22 +70,11 @@ public class ConnectionScreen extends Fragment implements ClientListener, INewsC
 
         //checkServers(true);
         client = new Client();
-
-        final EditText ipText = (EditText)view.findViewById(R.id.ip);   //Text where you type the game ip
-        ipText.setText(getLastIP());                                    //Set the last inserted ip
-
-        connect = (Button)view.findViewById(R.id.btnConnect);    //Start connection to the server when pressed
-        connect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String ip = ipText.getText().toString();                //Get the ip
-                startClient(ip, Client.PORT);                           //Connection to the server
-            }
-        });
     }
 
     private void showNews(){
         NewsContainer news = NewsContainer.getInstance();
+
         if(news.newsDownloaded()) {
             onNewsLoaded(news, true);
             return;
@@ -248,6 +256,7 @@ public class ConnectionScreen extends Fragment implements ClientListener, INewsC
 
     @Override
     public void onNewsLoaded(final NewsContainer container, final boolean success) {
+
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -260,10 +269,25 @@ public class ConnectionScreen extends Fragment implements ClientListener, INewsC
                     return;
                 }
                 int count = container.getCount();
+
                 for(int i = 0; i < count; i++){
-                    newsLayout.addView(container.getNews(i).getNews(getActivity().getLayoutInflater()));
+                    View element = container.getNews(i).getNews(getActivity().getLayoutInflater());
+                    newsLayout.addView(element);
+                    element.startAnimation(getFadeInAnimation(i * 50 + 50));
                 }
             }
         });
+    }
+
+    private AnimationSet getFadeInAnimation(int startDelay){
+        AnimationSet anim = new AnimationSet(true);
+        TranslateAnimation tAnim = new TranslateAnimation(-200, 0, 0, 0);
+        AlphaAnimation aAnim = new AlphaAnimation(0, 1);
+
+        anim.addAnimation(tAnim);
+        anim.addAnimation(aAnim);
+        anim.setDuration(300);
+        anim.setStartOffset(startDelay);
+        return anim;
     }
 }
