@@ -15,10 +15,18 @@ public class CommandButtonState {
 
     private CommandState state;
     private char commandChar;
+    private boolean sendOnce = false;
 
     public CommandButtonState(char commandChar){
         this.commandChar = commandChar;
         state = CommandState.NOTPRESSED;
+        sendOnce = false;
+    }
+
+    public CommandButtonState(char commandChar, boolean sendOnce){
+        this.commandChar = commandChar;
+        state = CommandState.NOTPRESSED;
+        this.sendOnce = sendOnce;
     }
 
     public void press(){
@@ -27,6 +35,11 @@ public class CommandButtonState {
     }
 
     public void update(){
+        if(sendOnce){
+            state = CommandState.NOTPRESSED;
+            return;
+        }
+
         if(state == CommandState.CLICKED)
             state = CommandState.PRESSED;
         if(state == CommandState.SENDONCE)

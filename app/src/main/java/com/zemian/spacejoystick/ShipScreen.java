@@ -164,6 +164,31 @@ public class ShipScreen extends Fragment {
     private View getSkinChooserView(LayoutInflater inflater){
         View view = inflater.inflate(R.layout.ship_skin_choser, null);
 
+        LinearLayout layout = (LinearLayout)view.findViewById(R.id.ships_container);
+
+        final String[] names = getResources().getStringArray(R.array.ship_skins);
+
+        final TextView curSkin = (TextView) view.findViewById(R.id.ship_skin_name);
+        curSkin.setText("Current skin: " + names[playerData.getShipSkin()]);
+
+        for(int i = 0; i < 4; i++){
+            final int index = i;
+            View shipView = inflater.inflate(R.layout.ship_layout, null);
+            ImageView img = (ImageView) shipView.findViewById(R.id.ship_image);
+            TextView shipName = (TextView) shipView.findViewById(R.id.ship_name);
+            shipName.setText(names[i]);
+            img.setImageResource(R.drawable.ship1 + i);
+            layout.addView(shipView);
+            shipView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    playerData.setShipSkin(index);
+                    curSkin.setText("Current skin: " + names[index]);
+                }
+            });
+        }
+
+        /*
         Spinner abilities = (Spinner) view.findViewById(R.id.spnSkin);
 
         final ImageView imageView = (ImageView) view.findViewById(R.id.imgSkin);
@@ -185,7 +210,7 @@ public class ShipScreen extends Fragment {
             public void onNothingSelected(AdapterView<?> parent) {}
         });
         abilities.setSelection(playerData.getShipSkin());
-
+        */
         return view;
     }
 }

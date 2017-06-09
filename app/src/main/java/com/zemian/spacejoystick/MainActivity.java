@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import com.example.oleksandr.spacejoystick.R;
 
+import java.util.ArrayList;
+
 //Documented
 
 /**
@@ -29,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
     private TextView killsView;        //Shows player's health
     private TextView deathView;        //Shows player's shield
 
-    private boolean engineB = false;    //Engine state
+    //private boolean engineB = false;    //Engine state
     private ActivityConnectionData activityConnectionData;
 
     //Commands
@@ -37,6 +39,10 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
     private CommandButtonState rightCommand;
     private CommandButtonState fireCommand;
     private CommandButtonState abilityCommand;
+    private CommandButtonState pauseCommand;
+    private CommandButtonState startCommand;
+    private CommandButtonState engineCommand;
+    private ArrayList<CommandButtonState> buttonStates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +62,10 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
         rightCommand = new CommandButtonState(Converter.toChar(Command.TURNRIGHT));
         fireCommand = new CommandButtonState(Converter.toChar(Command.FIRE));
         abilityCommand = new CommandButtonState(Converter.toChar(Command.ABILITYTRIGGER));
+
+        startCommand = new CommandButtonState(Converter.toChar(Command.STARTGAME), true);
+        pauseCommand = new CommandButtonState(Converter.toChar(Command.PAUSE), true);
+        engineCommand = new CommandButtonState(Converter.toChar(Command.ENGINETRIGGER), true);
 
         //Get buttons
         Button btnStart = (Button) findViewById(R.id.btn_startGame);
@@ -99,16 +109,21 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (client != null)
-                    client.send(Command.STARTGAME);
+                startCommand.press();
             }
         });
 
         btnPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (client != null)
-                    client.send(Command.PAUSE);
+                pauseCommand.press();
+            }
+        });
+
+        engine.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                engineCommand.press();
             }
         });
 
@@ -132,13 +147,6 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
                 if (event.getAction() == MotionEvent.ACTION_UP)
                     rightCommand.release();
                 return false;
-            }
-        });
-
-        engine.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                engineB = true;
             }
         });
 
@@ -393,7 +401,7 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
         }
 
         public void run() {
-            long mill = System.currentTimeMillis();
+            //long mill = System.currentTimeMillis();
             while (true) {
                 try {
                     Thread.sleep(1000 / frequency);
@@ -417,10 +425,15 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
                     if (abilityCommand.mustBeSended())
                         string += abilityCommand.getCommandChar();
 
-                    if (engineB) {
-                        string += Converter.toChar(Command.ENGINETRIGGER);
-                        engineB = false;
-                    }
+                    if(startCommand.mustBeSended())
+                        client.sendMessage(String.valueOf(startCommand.getCommandChar()));
+
+                    if(pauseCommand.mustBeSended())
+                        client.sendMessage(String.valueOf(pauseCommand.getCommandChar()));
+
+                    if(engineCommand.mustBeSended())
+                        string += engineCommand.getCommandChar();
+
                     client.sendMessage(Converter.toChar(Command.COMMANDSSTRING) + string);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
