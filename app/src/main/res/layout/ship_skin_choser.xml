@@ -8,10 +8,9 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10sp"
         android:elevation="3sp"
         android:background="@color/internalElements"
-        android:padding="15sp">
+        android:layout_marginBottom="15sp">
 
         <HorizontalScrollView
             android:layout_width="match_parent"
@@ -40,7 +39,8 @@
             android:textSize="20sp"
             android:textAlignment="textStart"
             android:textColor="@color/colorAccent"
-            android:visibility="visible" />
+            android:visibility="visible"
+            android:layout_margin="15sp" />
 
     </RelativeLayout>
 </LinearLayout>

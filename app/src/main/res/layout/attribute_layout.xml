@@ -10,8 +10,7 @@
         android:padding="15sp"
         android:layout_height="wrap_content"
         android:background="@color/internalElements"
-        android:elevation="3sp"
-        android:layout_marginTop="10sp">
+        android:elevation="0dp">
 
         <TextView
             android:text="Name:"

@@ -17,11 +17,9 @@ public class PlayerData {
     private String name;
     private int shipSkin;
     private int ability;
-    /*
-    private float abilityCoolDown = 5;
-    private float fireCoolDown = .5f;
-    */
     private int points = 0;
+
+    private IPlayerListener listener;
 
     private ArrayList<Attribute> attributes = new ArrayList<>();
 
@@ -35,14 +33,16 @@ public class PlayerData {
 
     public static PlayerData getInstance (Context context){
         if(instance == null){
-            System.out.println("Get new player's instance");
             PlayerData playerData = new PlayerData(context);
             playerData.loadPlayer();
             instance = playerData;
             return playerData;
         }
-        System.out.println("Get ready player's instance");
         return instance;
+    }
+
+    public void setPlayerListener(IPlayerListener listener){
+        this.listener = listener;
     }
 
     public void loadPlayer(){
@@ -51,10 +51,6 @@ public class PlayerData {
         name = sharedPreferences.getString("name", "Nameless");
         shipSkin = sharedPreferences.getInt("shipSkin", 1);
         ability = sharedPreferences.getInt("ability", 0);
-        /*
-        abilityCoolDown = sharedPreferences.getFloat("abilityCoolDown", 5);
-        fireCoolDown = sharedPreferences.getFloat("fireCoolDown", .5f);
-        */
         points = sharedPreferences.getInt("points", 5);
 
         for(int i = 0; i < attributes.size(); i++){
@@ -63,35 +59,22 @@ public class PlayerData {
         }
     }
 
+    public void attributeChange(Attribute attr){
+        SharedPreferences.Editor editor = getEditor();
+        editor.putInt(attr.getName(), attr.getLevel());
+        editor.commit();
+    }
+
     public void savePlayer(){
         SharedPreferences.Editor editor = getEditor();
-
         editor.putString("name", name);
         editor.putInt("shipSkin", shipSkin);
         editor.putInt("ability", ability);
-        /*
-        editor.putFloat("abilityCoolDown", abilityCoolDown);
-        editor.putFloat("fireCoolDown", fireCoolDown);
-        */
         editor.putInt("points", points);
-
         for(int i = 0; i < attributes.size(); i++){
             Attribute attr = attributes.get(i);
             editor.putInt(attr.getName(), attr.getLevel());
-
-            /*
-            String encName = Utils.encrypt(attr.getName());
-            String encVal = Utils.encrypt("" + attr.getLevel());
-
-            System.out.println("Encrypted: " + encName + ": " + encVal);
-
-            String name = Utils.decrypt(encName);
-            String val = Utils.decrypt(encVal);
-
-            System.out.println("Decrypted: " + name + ": " + val);
-            */
         }
-
         editor.commit();
     }
 
@@ -141,32 +124,26 @@ public class PlayerData {
 
     public void decresePoints(){
         points --;
+        savePoints();
+        if(listener != null)
+            listener.onPointsValueChange(points);
     }
 
     //NOT TESTED
     public void incresePoints(){
         points ++;
+        savePoints();
+        if(listener != null)
+            listener.onPointsValueChange(points);
     }
 
-    public void incresePoints(boolean mustSave){
-        points ++;
-        if(!mustSave)
-            return;
-
+    private void savePoints(){
         SharedPreferences.Editor editor = getEditor();
         editor.putInt("points", points);
-        System.out.println("Points: " + points);
         editor.commit();
     }
 
     //--------------------------------GETTERS--------------------------------//
-    /*public float getAbilityCoolDown(){
-        return abilityCoolDown;
-    }*/
-
-    /*public float getFireCoolDown(){
-        return fireCoolDown;
-    }*/
 
     public String getName(){
         return name;
@@ -183,14 +160,29 @@ public class PlayerData {
     //--------------------------------SETTERS--------------------------------//
     public void setName(String name) {
         this.name = name;
+
+        SharedPreferences.Editor editor = getEditor();
+        editor.putString("name", name);
+        editor.commit();
     }
 
-    public void setShipSkin(int shipSkin) {
-        this.shipSkin = shipSkin;
+    public void setShipSkin(ShipSkin shipSkin) {
+        this.shipSkin = shipSkin.getSkinIndex();
+
+        SharedPreferences.Editor editor = getEditor();
+        editor.putInt("shipSkin", this.shipSkin);
+        editor.commit();
+
+        if(listener != null)
+            listener.onSkinChange(shipSkin);
     }
 
     public void setAbility(int ability) {
         this.ability = ability;
+
+        SharedPreferences.Editor editor = getEditor();
+        editor.putInt("ability", ability);
+        editor.commit();
     }
 
     /*

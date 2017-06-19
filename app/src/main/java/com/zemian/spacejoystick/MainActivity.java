@@ -292,7 +292,7 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
                 break;
 
             case ADDPOINT:
-                playerData.incresePoints(true);
+                playerData.incresePoints();
                 break;
         }
     }
