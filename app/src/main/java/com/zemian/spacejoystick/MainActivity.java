@@ -2,6 +2,9 @@ package com.zemian.spacejoystick;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -42,7 +45,6 @@ public class MainActivity extends AppCompatActivity implements ClientListener {
     private CommandButtonState pauseCommand;
     private CommandButtonState startCommand;
     private CommandButtonState engineCommand;
-    private ArrayList<CommandButtonState> buttonStates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -45,6 +45,21 @@ public class PlayerData {
         this.listener = listener;
     }
 
+    public Attribute getAttribute(String name){
+        for(int i = 0; i < attributes.size(); i++){
+            if(name.equals(attributes.get(i).getName()))
+                return attributes.get(i);
+        }
+        return null;
+    }
+
+    public Attribute getAttribute(int index){
+        if(index < attributes.size())
+            return attributes.get(index);
+
+        return null;
+    }
+
     public void loadPlayer(){
         SharedPreferences sharedPreferences = context.getSharedPreferences("player", Context.MODE_PRIVATE);
 
@@ -101,21 +116,6 @@ public class PlayerData {
                 "1"
         };
         return dati;
-    }
-
-    public Attribute getAttribute(String name){
-        for(int i = 0; i < attributes.size(); i++){
-            if(name.equals(attributes.get(i).getName()))
-                return attributes.get(i);
-        }
-        return null;
-    }
-
-    public Attribute getAttribute(int index){
-        if(index < attributes.size())
-            return attributes.get(index);
-
-        return null;
     }
 
     public int getAttributesCount(){
